@@ -3,6 +3,3 @@
 
 # Remove HTML Slug
 /* /html/:splat 200 
-
-# 404 Page
-/* /html/404.html   404
