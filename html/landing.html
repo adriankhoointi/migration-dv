@@ -24,7 +24,20 @@
 
     <!-- Custom -->
     <script src="../assets/js/app.min.js"></script>
+    
+    <!-- Custom Scrollbar - SimpleBar -->
+    <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
+    
+    <!-- Scrollify -->
+    <script src="../assets/libs/scrollify/jquery.scrollify.js"></script>
+      
+    <!-- Scrollify Configuration - Custom -->
+    <script src="../assets/libs/scrollify/scrollifyHomeMain.js"></script>
+      
+    <!-- Scrollify Pagination Styling -->
+    <link rel="stylesheet" href="../assets/libs/scrollify/scrollifyHomeMain.css" />
   </head>
+  
   <body>
     <!-- Responsive navbar-->
     <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -57,130 +70,139 @@
       </div>
     </header>
 
-    <!-- Visualisation 1-->
-    <section class="min-vh-100" id="Visualisation1">
-      <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 align-items-center my-5">
-          <div class="col-lg-7">
-            <img
-              class="img-fluid rounded mb-4 mb-lg-0"
-              src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
-              alt="..."
-            />
-          </div>
-          <div class="col-lg-5">
-            <h1 class="font-weight-light">Title 1</h1>
-            <p>
-              This is a template that is great for small businesses. It doesn't
-              have too much fancy flare to it, but it makes a great use of the
-              standard Bootstrap core components. Feel free to use this template
-              for any project you want!
-            </p>
-            <a class="btn btn-primary" href="#Visualisation2">Call to Action!</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <div class="container-fluid">
+      <ul class="scrollifyPagination">
+        <li><a href="#section1" class="active"><span class="hover-text">Section 1</span></a></li>
+        <li><a href="#section2" class=""><span class="hover-text">Section 2</span></a></li>
+        <li><a href="#section3"><span class="hover-text">Section 3</span></a></li>
+        <li><a href="#section4"><span class="hover-text">Section 4</span></a></li>
+      </ul>
 
-    <!-- Visualisation 2-->
-    <section class="min-vh-100 bg-light" id="Visualisation2">
-      <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 align-items-center my-5">
-          <div class="col-lg-7">
-            <img
-              class="img-fluid rounded mb-4 mb-lg-0"
-              src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
-              alt="..."
-            />
-          </div>
-          <div class="col-lg-5">
-            <h1 class="font-weight-light">Title 2</h1>
-            <p>
-              This is a template that is great for small businesses. It doesn't
-              have too much fancy flare to it, but it makes a great use of the
-              standard Bootstrap core components. Feel free to use this template
-              for any project you want!
-            </p>
-            <a class="btn btn-primary" href="#Visualisation3">Call to Action!</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Visualisation 3-->
-    <section class="min-vh-100" id="Visualisation3">
-      <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 align-items-center my-5">
-          <div class="col-lg-7">
-            <img
-              class="img-fluid rounded mb-4 mb-lg-0"
-              src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
-              alt="..."
-            />
-          </div>
-          <div class="col-lg-5">
-            <h1 class="font-weight-light">Title 3</h1>
-            <p>
-              This is a template that is great for small businesses. It doesn't
-              have too much fancy flare to it, but it makes a great use of the
-              standard Bootstrap core components. Feel free to use this template
-              for any project you want!
-            </p>
-            <a class="btn btn-primary" href="#Visualisation4">Call to Action!</a>
+      <!-- Visualisation 1-->
+      <section class="row vh-100 bg-primary scrollSection" id="Visualisation1">
+        <div class="container px-4 px-lg-5">
+          <div class="row gx-4 gx-lg-5 align-items-center my-5">
+            <div class="col-lg-7">
+              <img
+                class="img-fluid rounded mb-4 mb-lg-0"
+                src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
+                alt="..."
+              />
+            </div>
+            <div class="col-lg-5">
+              <h1 class="font-weight-light">Title 1</h1>
+              <p>
+                This is a template that is great for small businesses. It doesn't
+                have too much fancy flare to it, but it makes a great use of the
+                standard Bootstrap core components. Feel free to use this template
+                for any project you want!
+              </p>
+              <a class="btn btn-primary" href="#Visualisation2">Call to Action!</a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- Visualisation 4-->
-    <section class="min-vh-100 bg-light" id="Visualisation4">
-      <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 align-items-center my-5">
-          <div class="col-lg-7">
-            <img
-              class="img-fluid rounded mb-4 mb-lg-0"
-              src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
-              alt="..."
-            />
-          </div>
-          <div class="col-lg-5">
-            <h1 class="font-weight-light">Title 4</h1>
-            <p>
-              This is a template that is great for small businesses. It doesn't
-              have too much fancy flare to it, but it makes a great use of the
-              standard Bootstrap core components. Feel free to use this template
-              for any project you want!
-            </p>
-            <a class="btn btn-primary" href="#Visualisation5">Call to Action!</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Visualisation 5-->
-    <section class="min-vh-100" id="Visualisation5">
-      <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 align-items-center my-5">
-          <div class="col-lg-7">
-            <img
-              class="img-fluid rounded mb-4 mb-lg-0"
-              src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
-              alt="..."
-            />
-          </div>
-          <div class="col-lg-5">
-            <h1 class="font-weight-light">Title 5</h1>
-            <p>
-              This is a template that is great for small businesses. It doesn't
-              have too much fancy flare to it, but it makes a great use of the
-              standard Bootstrap core components. Feel free to use this template
-              for any project you want!
-            </p>
-            <a class="btn btn-primary" href="#!">Call to Action!</a>
+      </section>
+  
+      <!-- Visualisation 2-->
+      <section class="row vh-100 bg-secondary scrollSection" id="Visualisation2">
+        <div class="container px-4 px-lg-5">
+          <div class="row gx-4 gx-lg-5 align-items-center my-5">
+            <div class="col-lg-7">
+              <img
+                class="img-fluid rounded mb-4 mb-lg-0"
+                src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
+                alt="..."
+              />
+            </div>
+            <div class="col-lg-5">
+              <h1 class="font-weight-light">Title 2</h1>
+              <p>
+                This is a template that is great for small businesses. It doesn't
+                have too much fancy flare to it, but it makes a great use of the
+                standard Bootstrap core components. Feel free to use this template
+                for any project you want!
+              </p>
+              <a class="btn btn-primary" href="#Visualisation3">Call to Action!</a>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+  
+      <!-- Visualisation 3-->
+      <section class="row vh-100 bg-primary scrollSection" id="Visualisation3">
+        <div class="container px-4 px-lg-5">
+          <div class="row gx-4 gx-lg-5 align-items-center my-5">
+            <div class="col-lg-7">
+              <img
+                class="img-fluid rounded mb-4 mb-lg-0"
+                src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
+                alt="..."
+              />
+            </div>
+            <div class="col-lg-5">
+              <h1 class="font-weight-light">Title 3</h1>
+              <p>
+                This is a template that is great for small businesses. It doesn't
+                have too much fancy flare to it, but it makes a great use of the
+                standard Bootstrap core components. Feel free to use this template
+                for any project you want!
+              </p>
+              <a class="btn btn-primary" href="#Visualisation4">Call to Action!</a>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Visualisation 4-->
+      <section class="row vh-100 bg-secondary scrollSection" id="Visualisation4">
+        <div class="container px-4 px-lg-5">
+          <div class="row gx-4 gx-lg-5 align-items-center my-5">
+            <div class="col-lg-7">
+              <img
+                class="img-fluid rounded mb-4 mb-lg-0"
+                src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
+                alt="..."
+              />
+            </div>
+            <div class="col-lg-5">
+              <h1 class="font-weight-light">Title 4</h1>
+              <p>
+                This is a template that is great for small businesses. It doesn't
+                have too much fancy flare to it, but it makes a great use of the
+                standard Bootstrap core components. Feel free to use this template
+                for any project you want!
+              </p>
+              <a class="btn btn-primary" href="#Visualisation5">Call to Action!</a>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Visualisation 5-->
+      <section class="row vh-100 bg-primary scrollSection" id="Visualisation5">
+        <div class="container px-4 px-lg-5">
+          <div class="row gx-4 gx-lg-5 align-items-center my-5">
+            <div class="col-lg-7">
+              <img
+                class="img-fluid rounded mb-4 mb-lg-0"
+                src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg"
+                alt="..."
+              />
+            </div>
+            <div class="col-lg-5">
+              <h1 class="font-weight-light">Title 5</h1>
+              <p>
+                This is a template that is great for small businesses. It doesn't
+                have too much fancy flare to it, but it makes a great use of the
+                standard Bootstrap core components. Feel free to use this template
+                for any project you want!
+              </p>
+              <a class="btn btn-primary" href="#!">Call to Action!</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
 
     <!-- Footer-->
     <footer class="py-5 bg-dark">
