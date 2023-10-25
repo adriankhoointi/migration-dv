@@ -1,14 +1,45 @@
 
 /* Homepage header */
+
+.masthead {
+  min-height: 30rem;
+  position: relative;
+  display: table;
+  width: 100%;
+  height: auto;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.1) 100%), url("../images/backgrounds/intro-bg.jpg");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+}
+
+/* Overlay */
+.mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-attachment: fixed
+}
+
 header.masthead .masthead-content {
     z-index: 1;
     position: relative;
   }
-  header.masthead .masthead-content .masthead-heading {
-    font-size: 4rem;
-  }
-  header.masthead .masthead-content .masthead-subheading {
-    font-size: 2rem;
+
+  @media only screen and (max-device-width: 1366px) {
+    .masthead {
+      background-attachment: scroll;
+    }
   }
   
   @media (min-width: 992px) {
@@ -16,10 +47,61 @@ header.masthead .masthead-content {
       padding-top: calc(10rem + 55px);
       padding-bottom: 10rem;
     }
-    header.masthead .masthead-content .masthead-heading {
-      font-size: 6rem;
-    }
-    header.masthead .masthead-content .masthead-subheading {
-      font-size: 4rem;
-    }
   }
+
+/* Animated Button */
+
+  .animated-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    line-height: 80px;
+    display: inline-block;
+    text-align: center;
+    background: #325C77;
+    position: relative;
+}
+
+.animated-btn::before, .animated-btn::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 50%;
+    background: rgba(50, 92, 119, 0.8);
+    animation: ripple-1 2s infinite ease-in-out;
+    z-index: -1;
+}
+
+.animated-btn::after {
+    background: rgba(50, 92, 119, 0.6);
+    animation: ripple-2 2s infinite ease-in-out;
+    animation-delay: 0.5s;
+}
+
+@keyframes ripple-1 {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes ripple-2 {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.7);
+        opacity: 0;
+    }
+}

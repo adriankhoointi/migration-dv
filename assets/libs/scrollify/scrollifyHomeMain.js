@@ -16,4 +16,8 @@ $(function () {
     $.scrollify.move($(this).attr("href"));
   });
 
+  $(".scrollifyButton a").on("click", function () {
+    $.scrollify.move($(this).attr("href"));
+  });
+
 });
