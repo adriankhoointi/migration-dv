@@ -52,7 +52,7 @@ function enter (svg) {
                     .attr("stroke-width", 0.2);
 
     //Define drag behaviour - allows user to rotate globe
-    svg.call(d3.drag().on('drag', _.debounce((event) => {
+    svg.call(d3.drag().on('drag', _.throttle((event) => {
         //Get current rotation
         const rotate = projection.rotate();
         //Get dynamic sensitivity
@@ -71,8 +71,7 @@ function enter (svg) {
         path = d3.geoPath().projection(projection);
         svg.selectAll("path").attr("d", path);
 
-        //Delay of debounce
-        })
+        }, 100, {'trailing': true})
         ))
 
         //Define zoom behaviour
@@ -96,7 +95,7 @@ function enter (svg) {
                 event.transform.k = 0.5;
             }
         }
-        //Delay of debounce
+
         )
         ));
 
@@ -113,14 +112,44 @@ function enter (svg) {
         .attr("class", d => "country_" + d.properties.name_en.replace(" ", "_"))
         //Appends the path to the map
         .attr("d", path)
-
         //Fill polygons
         .attr("fill", "white")
 
         //Add border to polygons
         .attr("stroke", "black")
         .attr("stroke-width", 0.3)
-        .style("opacity", 0.8);
+        .style("opacity", 0.8)
+        
+        //Add mouseover event
+        .on("mouseover", function(event, d) {
+            //Add hover effect
+            d3.select(this).attr("fill", "#00ADEF");
+            //Add centroid
+
+            //Test add circle
+            svg.append("circle")
+            .attr("cx", path.centroid(d)[0])
+            .attr("cy", path.centroid(d)[1])
+            .attr("r", 5)
+            .attr("fill", "red");
+
+            console.log(path.centroid(d)[0]);
+            //path.centroid(this)[0]; //X
+            //path.centroid(this)[1]; //Y
+        })
+
+        //Add mouseout event
+        .on("mouseout", function(event, d) {
+            //Remove hover effect
+            d3.select(this).attr("fill", "white");
+
+            //Remove circles
+            svg.selectAll("circle").remove();
+        });
+
+}
+
+function updatePath() {
 
 }
 
