@@ -1,9 +1,8 @@
 //Initialise datasets
 let worldjson;
+let migrationDS;
 
-//TODO: Add in data for source and destination migrations
-
-
+//SCRIPT PROPERTIES
 //Define width and height of visualisation
 let w = d3.select("#data-vis").node().getBoundingClientRect().width;
 let h = 600;
@@ -11,6 +10,13 @@ let h = 600;
 //Define mouse sensitivity
 const sensitivity = 75;
 
+//Define annotation type
+const annotype = d3.annotationLabel;
+
+//Get user locale
+const locale = navigator.languages[0] || navigator.language || "en-GB";
+
+//FUNCTION START
 //Initalise visualisation
 async function init() {
     //Load datasets
@@ -18,10 +24,42 @@ async function init() {
     await geoChart();
 }
 
+//Dynamic resize
+async function resize() {
+    //Remove SVG
+    d3.select("svg").remove();
+
+    //Reset width
+    w = d3.select("#data-vis").node().getBoundingClientRect().width;
+
+    //Redraw visualisation
+    await geoChart();
+}
+
 //Load datasets
 async function loadDatasets() {
     //Load world json
-    worldjson = await d3.json("../assets/d3/data/countries-min.json");
+    worldjson = await d3.json("../assets/d3/data/world-map/countries-min.json");
+
+    //Load migration data
+    migrationDS = await d3.csv("../assets/d3/data/geo-migration/clean_ims_stock_total_by_origin_and_destination.csv", function(d) {
+        return {
+            //Declare variables
+            origin_code: d['Location code of origin'],
+            origin_name: d['Origin'],
+            destination_code: d['Location code of destination'],
+            destination_name: d['Destination'],
+            migration2000: +d['2000'],
+            migration2005: +d['2005'],
+            migration2010: +d['2010'],
+            migration2015: +d['2015'],
+            migration2020: +d['2020'],
+            migrationtotal: +d['Total (2000-2020)']
+        };
+    });
+
+    //TODO: Remove Debug data table
+    console.table(migrationDS, ["origin_code", "origin_name", "destination_code", "destination_name", "migration2000", "migration2005", "migration2010", "migration2015", "migration2020", "migrationtotal"])
 }
 
 function enter (svg) {
@@ -64,14 +102,14 @@ function enter (svg) {
             rotate[1] - event.dy * k
         ]);
 
-        //Debug rotation
-        console.log(projection.rotate());
-
         //Update path
         path = d3.geoPath().projection(projection);
         svg.selectAll("path").attr("d", path);
 
-        }, 100, {'trailing': true})
+        //Remove hover annotations (Prevent confusion)
+        svg.selectAll(".hover-annotation").remove();
+
+        }, 50, {'trailing': true})
         ))
 
         //Define zoom behaviour
@@ -80,22 +118,24 @@ function enter (svg) {
                 //Update projection
                 projection.scale(initialScale * event.transform.k);
 
-                //Debug scale
-                console.log(projection.scale());
-
                 //Update path
                 path = d3.geoPath().projection(projection);
                 svg.selectAll("path").attr("d", path);
 
                 //Update globe radius
                 globe.attr("r", projection.scale());
+
+                //Remove hover annotations (Prevent confusion)
+                svg.selectAll(".hover-annotation").remove();
             }
             else {
                 //Reset zoom
                 event.transform.k = 0.5;
+
+                //Remove annotations
+                svg.selectAll(".hover-annotation").remove();
             }
         }
-
         )
         ));
 
@@ -124,18 +164,9 @@ function enter (svg) {
         .on("mouseover", function(event, d) {
             //Add hover effect
             d3.select(this).attr("fill", "#00ADEF");
-            //Add centroid
 
-            //Test add circle
-            svg.append("circle")
-            .attr("cx", path.centroid(d)[0])
-            .attr("cy", path.centroid(d)[1])
-            .attr("r", 5)
-            .attr("fill", "red");
-
-            console.log(path.centroid(d)[0]);
-            //path.centroid(this)[0]; //X
-            //path.centroid(this)[1]; //Y
+            //Create on hover annotation
+            createHoverAnnotations(path, d);
         })
 
         //Add mouseout event
@@ -143,14 +174,97 @@ function enter (svg) {
             //Remove hover effect
             d3.select(this).attr("fill", "white");
 
-            //Remove circles
-            svg.selectAll("circle").remove();
+            //Remove hover annotations
+            svg.selectAll(".hover-annotation").remove();
+        })
+        
+        //Add onclick event
+        .on("click", function(event, d) {
+            //Check if clicked country is SEA
+            if(d.properties.subregion == "South-Eastern Asia") {
+                let destinationCard = d3.select("#destinationCard");
+
+                //Filter to the country
+                let maxDestinationIndex = d3.maxIndex(migrationDS, (data)=>{
+                    if (data.origin_code == d.properties.iso_n3) {
+                        return +data.migrationtotal;
+                    }});
+
+                let maxDestinationCountry = migrationDS[maxDestinationIndex];
+
+                let overallEmigrated = d3.sum(migrationDS, (data)=>{
+                    if (data.origin_code == d.properties.iso_n3) {
+                        return +data.migrationtotal;
+                    }});
+
+                //Show country card
+                destinationCard.classed("d-none", false)
+                    .select(".clickedCountryName")
+                    .text(d.properties.name_en);
+
+                //Assign properties
+                destinationCard.select(".clickedRegionName")
+                    .text(d.properties.subregion);
+
+                destinationCard.select(".mainDestinationCountry")
+                    .text(maxDestinationCountry.destination_name);
+                
+                destinationCard.select(".mainDestinationTotal")
+                    .text(maxDestinationCountry.migrationtotal.toLocaleString(locale));
+
+                destinationCard.select(".overallEmigration")
+                    .text(overallEmigrated.toLocaleString(locale));
+            }
+
         });
+
+    //Close Country Card
+    d3.select("#destinationCard").select(".btn-close")
+        .on("click", function(event, d) {
+            //Hide country card
+            d3.select("#destinationCard")
+                .classed("d-none", true);
+
+            //TODO: Unfilter the country here
+        });
+    
+}
+
+//TODO: Check if paths need to be updated
+function updatePath() {
 
 }
 
-function updatePath() {
+function createHoverAnnotations(path, d) {
+    //Create annotation
+    let annotation = [{
+        note: {
+            title: d.properties.name_en,
+            label: d.properties.subregion,
+            bgPadding: 20,
+        },
+        //To show bg, bg accessible in HTML
+        className: "show-bg",
+        //Set X and Y
+        x: path.centroid(d)[0],
+        y: path.centroid(d)[1],
+        dx: 100,
+        dy: -50,
+        color: ["#ffd02e"]
+    }];
 
+    //Set annotations properties
+    let makeAnnotations = d3.annotation()
+        .editMode(false)
+        .notePadding(20)
+        .type(annotype)
+        .annotations(annotation);
+
+    //Draw annotations
+    d3.select("svg")
+        .append("g")
+        .attr("class", "annotation-group hover-annotation")
+        .call(makeAnnotations);
 }
 
 function geoChart() {
@@ -166,4 +280,4 @@ function geoChart() {
 
 window.onload = init; //Executes the init function when the window loads
 
-//TODO: Add window resize function to rescale visualisation
+window.onresize = resize; //Executes the resize function when the window is resized
