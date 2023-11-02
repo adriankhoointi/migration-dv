@@ -162,16 +162,28 @@ function enter (svg) {
         
         //Add mouseover event
         .on("mouseover", function(event, d) {
+            //If anything matches destination group, must be high income
+            let allDestinationCode = d3.group(migrationDS, (data)=>{return data.destination_code});
+            let matchIncomeGroup = allDestinationCode.has(d.properties.iso_n3) ? true : false;
+
+            //TODO: REMOVE DEBUG
+            console.log(matchIncomeGroup);
+
             //Add hover effect
             if(d.properties.subregion == "South-Eastern Asia"){
                 d3.select(this).attr("fill", "#00ADEF");
             }
-            else {
+            else if (matchIncomeGroup) {
                 d3.select(this).attr("fill", "#EF4200");
             }
+            else {
+                d3.select(this).attr("fill", "#999999");
+            };
 
             //Create on hover annotation
             createHoverAnnotations(path, d);
+
+            //FIXME: Wait for Ming Soo to fix data
         })
 
         //Add mouseout event
