@@ -163,7 +163,12 @@ function enter (svg) {
         //Add mouseover event
         .on("mouseover", function(event, d) {
             //Add hover effect
-            d3.select(this).attr("fill", "#00ADEF");
+            if(d.properties.subregion == "South-Eastern Asia"){
+                d3.select(this).attr("fill", "#00ADEF");
+            }
+            else {
+                d3.select(this).attr("fill", "#EF4200");
+            }
 
             //Create on hover annotation
             createHoverAnnotations(path, d);
