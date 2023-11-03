@@ -42,10 +42,10 @@ Credits to all the developers that has made our project possible  :heart:
 
 ## Web Hosting
 
-### Main Branch (Deployed)
+### Test Branch (Deployed)
 > [!WARNING]
 > The [testing branch](https://github.com/adriankhoointi/migration-dv/tree/dev) of the data visualisation's website is hosted on [Testing Netlify Website](https://test-cos30045-bkk-migration.netlify.app/)
 
-### Test Branch
+### Main Branch
 > [!WARNING]
 > The [main branch](https://github.com/adriankhoointi/migration-dv/) of the data visualisation's website is hosted on [Main Netlify Website](https://cos30045-bkk-migration.netlify.app/)
