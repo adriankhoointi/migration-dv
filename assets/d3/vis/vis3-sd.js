@@ -42,19 +42,19 @@ async function loadDatasets() {
     worldjson = await d3.json("../assets/d3/data/world-map/countries-min.json");
 
     //Load migration data
-    migrationDS = await d3.csv("../assets/d3/data/geo-migration/clean_ims_stock_total_by_origin_and_destination.csv", function(d) {
+    migrationDS = await d3.csv("../assets/d3/data/geo-migration/clean_ims_stock_proportion_by_origin_and_destination_v4.csv", function(d) {
         return {
             //Declare variables
             origin_code: d['Location code of origin'],
-            origin_name: d['Origin'],
+            origin_name: d['Region, subregion, country or area'], //This is origin
             destination_code: d['Location code of destination'],
             destination_name: d['Destination'],
-            migration2000: +d['2000'],
-            migration2005: +d['2005'],
-            migration2010: +d['2010'],
-            migration2015: +d['2015'],
-            migration2020: +d['2020'],
-            migrationtotal: +d['Total (2000-2020)']
+            migration2000: +d['Total Migrants (2000)'],
+            migration2005: +d['Total Migrants (2005)'],
+            migration2010: +d['Total Migrants (2010)'],
+            migration2015: +d['Total Migrants (2015)'],
+            migration2020: +d['Total Migrants (2020)'],
+            migrationtotal: +d['Total Migrants (2000-2020)']
         };
     });
 
@@ -203,14 +203,14 @@ function enter (svg) {
 
                 //Filter to the country
                 let maxDestinationIndex = d3.maxIndex(migrationDS, (data)=>{
-                    if (data.origin_code == d.properties.iso_n3) {
+                    if (data.origin_code == d.properties.iso_n3 && data.destination_code != "900") { //Exclude "WORLD"
                         return +data.migrationtotal;
                     }});
 
                 let maxDestinationCountry = migrationDS[maxDestinationIndex];
 
                 let overallEmigrated = d3.sum(migrationDS, (data)=>{
-                    if (data.origin_code == d.properties.iso_n3) {
+                    if (data.origin_code == d.properties.iso_n3 && data.destination_code != "900") { //Exclude "WORLD"
                         return +data.migrationtotal;
                     }});
 
