@@ -166,9 +166,6 @@ function enter (svg) {
             let allDestinationCode = d3.group(migrationDS, (data)=>{return data.destination_code});
             let matchIncomeGroup = allDestinationCode.has(d.properties.iso_n3) ? true : false;
 
-            //TODO: REMOVE DEBUG
-            console.log(matchIncomeGroup);
-
             //Add hover effect
             if(d.properties.subregion == "South-Eastern Asia"){
                 d3.select(this).attr("fill", "#00ADEF");
@@ -197,6 +194,11 @@ function enter (svg) {
         
         //Add onclick event
         .on("click", function(event, d) {
+            //Filter to high income
+            //If anything matches destination group, must be high income
+            let allDestinationCode = d3.group(migrationDS, (data)=>{return data.destination_code});
+            let matchIncomeGroup = allDestinationCode.has(d.properties.iso_n3) ? true : false;
+
             //Check if clicked country is SEA
             if(d.properties.subregion == "South-Eastern Asia") {
                 let destinationCard = d3.select("#destinationCard");
@@ -209,8 +211,13 @@ function enter (svg) {
 
                 let maxDestinationCountry = migrationDS[maxDestinationIndex];
 
-                let overallEmigrated = d3.sum(migrationDS, (data)=>{
+                let overallEmigratedBrainDrain = d3.sum(migrationDS, (data)=>{
                     if (data.origin_code == d.properties.iso_n3 && data.destination_code != "900") { //Exclude "WORLD"
+                        return +data.migrationtotal;
+                    }});
+
+                let overallEmigratedAll = d3.sum(migrationDS, (data)=>{
+                    if (data.origin_code == d.properties.iso_n3 && data.destination_code == "900") { //"WORLD" indicates all including without brain drain
                         return +data.migrationtotal;
                     }});
 
@@ -229,8 +236,55 @@ function enter (svg) {
                 destinationCard.select(".mainDestinationTotal")
                     .text(maxDestinationCountry.migrationtotal.toLocaleString(locale));
 
-                destinationCard.select(".overallEmigration")
-                    .text(overallEmigrated.toLocaleString(locale));
+                destinationCard.select(".overallEmigrationBrainDrain")
+                    .text(overallEmigratedBrainDrain.toLocaleString(locale));
+
+                destinationCard.select(".overallEmigrationAll")
+                    .text(overallEmigratedAll.toLocaleString(locale));
+
+                let sourceCard = d3.select("#sourceCard");
+                //Hide high income country card
+                sourceCard.classed("d-none", true);
+
+            }
+            else if (matchIncomeGroup) {
+                //Check if clicked country is not SEA
+                let sourceCard = d3.select("#sourceCard");
+
+                //Filter to the country
+                let maxSourceIndex = d3.maxIndex(migrationDS, (data)=>{
+                    if (data.destination_code == d.properties.iso_n3 && data.origin_code != "920") { //Exclude "South East Asia (All)"
+                        return +data.migrationtotal;
+                    }});
+
+                let maxSourceCountry = migrationDS[maxSourceIndex];
+
+                let overallImmigratedAll = d3.sum(migrationDS, (data)=>{
+                    if (data.destination_code == d.properties.iso_n3 && data.origin_code == "920") { //"South East Asia" indicates all including without brain drain
+                        return +data.migrationtotal;
+                    }});
+
+                //Show source card
+                sourceCard.classed("d-none", false)
+                .select(".clickedCountryName")
+                .text(d.properties.name_en);
+
+                //Assign properties
+                sourceCard.select(".clickedRegionName")
+                    .text(d.properties.subregion);
+
+                sourceCard.select(".mainSourceCountry")
+                    .text(maxSourceCountry.origin_name);
+                
+                sourceCard.select(".mainSourceTotal")
+                    .text(maxSourceCountry.migrationtotal.toLocaleString(locale));
+
+                sourceCard.select(".overallImmigrationAll")
+                    .text(overallImmigratedAll.toLocaleString(locale));
+
+                let destinationCard = d3.select("#destinationCard");
+                //Hide destination country card
+                destinationCard.classed("d-none", true);
             }
 
         });
@@ -240,6 +294,16 @@ function enter (svg) {
         .on("click", function(event, d) {
             //Hide country card
             d3.select("#destinationCard")
+                .classed("d-none", true);
+
+            //TODO: Unfilter the country here
+        });
+
+    //Close Country Card
+    d3.select("#sourceCard").select(".btn-close")
+        .on("click", function(event, d) {
+            //Hide country card
+            d3.select("#sourceCard")
                 .classed("d-none", true);
 
             //TODO: Unfilter the country here
