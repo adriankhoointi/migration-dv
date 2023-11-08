@@ -1,16 +1,12 @@
 // Specify the chart’s dimensions.
-var w;
-
-document.addEventListener("DOMContentLoaded", function() {
-    w = d3.select("#data-vis").node().getBoundingClientRect().width; // Use the value of w
-});
-
-var h = 600;
+let w = d3.select("#data-vis").node().getBoundingClientRect().width;
+let h = 600;
 const marginTop = 20;
 const marginRight = 20;
 const marginBottom = 30;
-const marginLeft = 30;
-var migrationDS;
+const marginLeft = 40;
+let migrationDS;
+
 
 function init(){
 
@@ -22,13 +18,17 @@ function init(){
             emigration: +d['Emigration']
         };
     }).then(function(data){
-        migrationDS = data;
+        let filteredData = data.filter(function(d){
+            let origin = d.origin != "South-Eastern Asia";
+            return origin;
+        })
+        console.table(filteredData, ["year", "origin", "emigration"]); // Print data to console
 
-        console.table(migrationDS, ["year", "origin", "emigration"]); // Print data to console
-        
+        migrationDS = filteredData;
         lineChart(migrationDS);
-    }); 
+    });
 }
+
 
 function lineChart(data){
 
@@ -42,18 +42,6 @@ function lineChart(data){
                 // .attr("style", "max-width: 100%, height: auto;");
 
     enter(svg, data);
-}
-
-function enter(svg, data){
-    // TODO: Draw Chart elements
-
-    var xS = xScale(data);
-    var yS = yScale(data);
-    
-    var xAxis = svg.append("g");
-
-    xAxis.attr("transform", )
-    
 }
 
 
@@ -74,4 +62,93 @@ function yScale(data){
     return y;
 }
 
-  window.onload = init;
+function pointerMoved(event, data, points, dot, svg) {
+    const [xm, ym] = d3.pointer(event);
+    const i = d3.leastIndex(points, ([x, y]) => Math.hypot(x - xm, y - ym));
+    const [x, y, k] = points[i];
+
+    dot.attr("transform", `translate(${x},${y})`);
+    dot.select("text").text(k);
+    svg.property("value", data[i]).dispatch("input", {bubbles: true});
+}
+
+  function pointerEntered(path, dot) {
+    path.style("mix-blend-mode", null).style("stroke", "#ddd");
+    dot.attr("display", null);
+}
+
+  function pointerLeft(path, dot, svg) {
+    path.style("mix-blend-mode", "multiply").style("stroke", null);
+    dot.attr("display", "none");
+    svg.node().value = null;
+    svg.dispatch("input", {bubbles: true});
+}
+
+
+function enter(svg, data){
+    // TODO: Draw Chart elements
+
+
+    // Define Scale variables
+    var xS = xScale(data);
+    var yS = yScale(data);
+    
+    // Plot X-axis
+    var xAxis = svg.append("g");
+
+    xAxis.attr("transform", `translate(0, ${h - marginBottom})`)
+        .call(d3.axisBottom(xS).ticks(w / 80).tickSizeOuter(0));
+
+
+    // Plot Y-axis
+    var yAxis = svg.append("g");
+
+    yAxis.attr("transform", `translate(${marginLeft}, 0)`)
+        .call(d3.axisLeft(yS))
+        .call(g => g.select(".domain").remove())
+        .call(g => g.append("text")
+        .attr("x", -marginLeft)
+        .attr("y", 10)
+        .attr("fill", "black")
+        .attr("text-anchor", "start")
+        .text("Number of Emigration"));
+
+    var points = data.map((d) => [xS(d.year), yS(d.emigration), d.origin]);
+
+    var groups = d3.rollup(points, v => Object.assign(v, {z: v[0][2]}), d => d[2]);
+
+    var line = d3.line();
+    var path = svg.append("g")
+                    .attr("class", "noodle")
+                    .attr("fill", "none")
+                    .attr("stroke", "steelblue")
+                    .attr("stroke-width", "2.5")
+                    .attr("stroke-linejoin", "round")
+                    .attr("stroke-linecap", "round")
+                    .selectAll("path")
+                    .data(groups.values())
+                    .join("path")
+                      .style("mix-blend-mode", "multiply")
+                      .attr("d", line);
+    
+    var dot = svg.append("g")
+                .attr("display", "none");
+
+    dot.append("circle")
+        .attr("r", 2.5)
+        .append("text")
+        .attr("text-anchor", "middle")
+        .attr("y", -8);
+
+    let pointerentered = () => pointerEntered(path, dot);
+    let pointermoved = (event) => pointerMoved(event, data, points, dot, svg);
+    let pointerleft = () => pointerLeft(path, dot, svg);
+
+    svg.on("pointerenter", pointerentered)
+        .on("pointermove", pointermoved)
+        .on("pointerleave", pointerleft)
+        .on("touchstart", event => event.preventDefault());
+
+    console.log(d3.select(".noodle").select("path").node());
+}
+window.onload = init;
