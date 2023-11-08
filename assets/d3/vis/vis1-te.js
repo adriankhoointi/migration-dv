@@ -6,9 +6,9 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 var h = 500;
-const marginTop = 10;
-const marginRight = 10;
-const marginBottom = 20;
+const marginTop = 60;
+const marginRight = 40;
+const marginBottom = 100;
 const marginLeft = 60;
 var migrationDS;
 
@@ -35,7 +35,8 @@ function stackedAreaChart(data){
     var svg = d3.select("#data-vis")
                 .append("svg")
                 .attr("width", w)
-                .attr("height", h);
+                .attr("height", h)
+                .attr("viewBox", [0, 0, w, h]);
                 // .style("background-color", "white");
                 // .attr("style", "max-width: 100%, height: auto;");
 
@@ -65,7 +66,7 @@ function enter(svg, xS, yS, series, color, area){
     
     // Add the y-axis, remove the domain line, add grid lines and a label.
     svg.append("g")
-      .attr("transform", `translate(${marginLeft},0)`)
+      .attr("transform", `translate(${marginLeft})`)
       .call(d3.axisLeft(yS).ticks(h / 80))
       .call(g => g.select(".domain").remove())
       .call(g => g.selectAll(".tick line")
@@ -93,12 +94,13 @@ function enter(svg, xS, yS, series, color, area){
     // Append the horizontal axis atop the area.
     svg.append("g")
     .attr("transform", `translate(0,${h - marginBottom})`)
-    .call(d3.axisBottom(xS).tickSizeOuter(0));
-
+    .call(d3.axisBottom(xS).ticks(7));
 }
+
 // TODO: Fix x-axis and y-axis
 function xScale(data){
-    const x = d3.scaleTime()
+    const x = d3.scaleLinear()
+                .domain(d3.extent(data, function(d){ return d.year; }))
                 .domain([d3.min(data, d => d.year), d3.max(data, d => d.year)])
                 .range([marginLeft, w - marginRight]);
 
@@ -108,7 +110,7 @@ function xScale(data){
 function yScale(series){
     const y = d3.scaleLinear()
                 .domain([0, d3.max(series, d => d3.max(d, d => d[1]))])
-                .rangeRound([h - marginBottom, marginTop]);
+                .range([h - marginBottom, marginTop]);
 
     return y;
 }
