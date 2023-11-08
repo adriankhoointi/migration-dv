@@ -5,11 +5,11 @@ document.addEventListener("DOMContentLoaded", function() {
     w = d3.select("#data-vis").node().getBoundingClientRect().width; // Use the value of w
 });
 
-var h = 500;
-const marginTop = 10;
-const marginRight = 10;
-const marginBottom = 20;
-const marginLeft = 60;
+var h = 600;
+const marginTop = 20;
+const marginRight = 20;
+const marginBottom = 30;
+const marginLeft = 30;
 var migrationDS;
 
 function init(){
@@ -26,89 +26,50 @@ function init(){
 
         console.table(migrationDS, ["year", "origin", "emigration"]); // Print data to console
         
-        stackedAreaChart(migrationDS);
+        lineChart(migrationDS);
     }); 
 }
 
-function stackedAreaChart(data){
+function lineChart(data){
 
-    var svg = d3.select("#data-vis")
+  var svg = d3.select("#data-vis")
                 .append("svg")
                 .attr("width", w)
-                .attr("height", h);
+                .attr("height", h)
+                .attr("viewBox", [0, 0, w, h])
+                .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;");
                 // .style("background-color", "white");
                 // .attr("style", "max-width: 100%, height: auto;");
 
-    var series = d3.stack()
-                    .keys(d3.union(data.map(d => d.origin)))
-                    .value(([, D], key) => D.get(key).emigration)
-                    (d3.index(data, d => d.year, d => d.origin));
+    enter(svg, data);
+}
+
+function enter(svg, data){
+    // TODO: Draw Chart elements
 
     var xS = xScale(data);
-    var yS = yScale(series);
-
-    const color = d3.scaleOrdinal()
-                    .domain(series.map(d => d.key))
-                    .range(d3.schemePaired); // Array of twelve(12) categorical colors represented as RGB hexadecimal strings.
-
-    const area = d3.area()
-                    .x(d => xS(d.data[0]))
-                    .y0(d => yS(d[0]))
-                    .y1(d => yS(d[1]));
+    var yS = yScale(data);
     
+    var xAxis = svg.append("g");
 
-    enter(svg, xS, yS, series, color, area, data);
+    xAxis.attr("transform", )
+    
 }
 
-function enter(svg, xS, yS, series, color, area){
-    // TODO: Draw Chart elements
-    
-    // Add the y-axis, remove the domain line, add grid lines and a label.
-    svg.append("g")
-      .attr("transform", `translate(${marginLeft},0)`)
-      .call(d3.axisLeft(yS).ticks(h / 80))
-      .call(g => g.select(".domain").remove())
-      .call(g => g.selectAll(".tick line")
-        .clone()
-        .attr("x2", w - marginLeft - marginRight)
-        .attr("stroke-opacity", 0.1))
-      .call(g => g.append("text")
-          .attr("x", -marginLeft)
-          .attr("y", 10)
-          .attr("fill", "currentColor")
-          .attr("text-anchor", "start")
-          .text("Number of Emigration"));
-          
-          
-    // Append a path for each series.
-    svg.append("g")
-        .selectAll()
-        .data(series)
-        .join("path")
-        .attr("fill", d => color(d.key))
-        .attr("d", area)
-        .append("title")
-        .text(d => d.key);
 
-    // Append the horizontal axis atop the area.
-    svg.append("g")
-    .attr("transform", `translate(0,${h - marginBottom})`)
-    .call(d3.axisBottom(xS).tickSizeOuter(0));
-
-}
-// TODO: Fix x-axis and y-axis
 function xScale(data){
-    const x = d3.scaleTime()
+    const x = d3.scaleLinear()
+                .domain(d3.extent(data, function(d){ return d.year; }))
                 .domain([d3.min(data, d => d.year), d3.max(data, d => d.year)])
                 .range([marginLeft, w - marginRight]);
 
     return x;
 }
 
-function yScale(series){
+function yScale(data){
     const y = d3.scaleLinear()
-                .domain([0, d3.max(series, d => d3.max(d, d => d[1]))])
-                .rangeRound([h - marginBottom, marginTop]);
+                .domain([0, d3.max(data, d => d.emigration)]).nice()
+                .range([h - marginBottom, marginTop]);
 
     return y;
 }
