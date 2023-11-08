@@ -47,8 +47,12 @@ async function loadDatasets() {
             //Declare variables
             origin_code: d['Location code of origin'],
             origin_name: d['Region, subregion, country or area'], //This is origin
+            origin_lat: +d['Origin Latitude'],
+            origin_long: +d['Origin Longitude'],
             destination_code: d['Location code of destination'],
             destination_name: d['Destination'],
+            destination_lat: +d['Destination Latitude'],
+            destination_long: +d['Destination Longitude'],
             migration2000: +d['Total Migrants (2000)'],
             migration2005: +d['Total Migrants (2005)'],
             migration2010: +d['Total Migrants (2010)'],
@@ -59,7 +63,7 @@ async function loadDatasets() {
     });
 
     //TODO: Remove Debug data table
-    console.table(migrationDS, ["origin_code", "origin_name", "destination_code", "destination_name", "migration2000", "migration2005", "migration2010", "migration2015", "migration2020", "migrationtotal"])
+    console.table(migrationDS, ["origin_code", "origin_name", "origin_lat", "origin_long", "destination_code", "destination_name", "destination_lat", "destination_long", "migration2000", "migration2005", "migration2010", "migration2015", "migration2020", "migrationtotal"])
 }
 
 function enter (svg) {
@@ -179,8 +183,6 @@ function enter (svg) {
 
             //Create on hover annotation
             createHoverAnnotations(path, d);
-
-            //FIXME: Wait for Ming Soo to fix data
         })
 
         //Add mouseout event
@@ -289,6 +291,112 @@ function enter (svg) {
 
         });
 
+
+    //Filter data for connections and markers
+    let filtereddata = migrationDS.filter(function(d) {
+        //Get origin and destination
+        let origin = [d.origin_long, d.origin_lat];
+        let destination = [d.destination_long, d.destination_lat];
+
+        let checklong = d.origin_long != 0 && d.destination_long != 0;
+        let checklat = d.origin_lat != 0 && d.destination_lat != 0;
+        let samecoordinates = origin[0] != destination[0] && origin[1] != destination[1];
+        let world = d.origin_code != "920" && d.destination_code != "900";
+
+        let bool = checklong && checklat && samecoordinates && world;
+        return bool;
+    });
+
+    //Draw Connections (Airplane)
+    let connectionsGroup = svg.append("g")
+                                .attr("class", "connections");
+
+    let connections = connectionsGroup.selectAll("worldlinks")
+                        .data(filtereddata)
+                        .enter()
+                        .append("path")
+                        .attr("d", function(d) {    
+                            //Get origin and destination coordinates
+                            let origin = [d.origin_long, d.origin_lat];
+                            let destination = [d.destination_long, d.destination_lat];
+
+                            //Check if origin and destination are not the same
+                            if (origin[0] != destination[0] && origin[1] != destination[1] && d.origin_code != "920" && d.destination_code != "900") {
+                                //Create a path between origin and destination
+                                let pathData = {type: "LineString", coordinates: [origin, destination]};
+
+                                //Return path
+                                return path(pathData);
+                            }
+                        })
+                        .attr("class",function(d) { //To find back in other functions
+                            return "origin_" + d.origin_code + " destination_" + d.destination_code;
+                        })
+                        .style("fill", "none")
+                        .style("stroke", "black")
+                        .style("stroke-width", 0.5)
+                        .style("stroke-opacity", 0.08);
+
+    let markers = svg.selectAll("worldmarks")
+                        .data(filtereddata)
+                        .enter()
+                        .append("circle")
+                        .attr("class",function(d) { //To find back in other functions
+                            return "origin_" + d.origin_code + " destination_" + d.destination_code;
+                        })
+                        .attr("r", 10)
+                        .attr("fill", "black")
+                        //opacity
+                        .attr("opacity", 0.5)
+                        .attr("cx", function(d) {
+                            let origin = [d.origin_long, d.origin_lat];
+
+                            return projection(origin)[0];
+                        })
+                        .attr("cy", function(d) {
+                            let origin = [d.origin_long, d.origin_lat];
+                            return projection(origin)[1];
+                        });
+
+    //Animate markers
+    markers.each(function() {
+//TODO: FIX THIS LATER
+        let c = d3.select(this).attr("class");
+        let c2 = c.split(" ");
+        let cstr = "." + c2[0] + "." + c2[1];
+
+        let node = d3.select(".connections").select(cstr).node();
+
+        //Animate each marker
+        d3.select(this)
+            .transition()
+            .ease(d3.easeLinear)
+            .duration(25000)
+            .attrTween("cx", translateAlongX(node))
+            .attrTween("cy", translateAlongY(node));
+    });
+
+
+    //Animate connections
+    let animation = function() {
+        connections.each(function() {
+            //Animate each path
+            d3.select(this)
+                .attr("stroke-dasharray", 5 + " " + 2)
+                .attr("stroke-dashoffset", function(){
+                    return d3.select(this).node().getTotalLength();
+                })
+                .transition()
+                .ease(d3.easeLinear)
+                .attr("stroke-dashoffset", 0)
+                .duration(25000);
+        });
+    };
+
+    //Animation loop
+    animation(); // Start the animation
+    setInterval(animation, 25100); // Call the animation function every 10 seconds
+
     //Close Country Card
     d3.select("#destinationCard").select(".btn-close")
         .on("click", function(event, d) {
@@ -309,6 +417,41 @@ function enter (svg) {
             //TODO: Unfilter the country here
         });
     
+}
+
+//Custom animation interpolation
+function translateAlongX(node) {
+    //Get total length of path
+    let l = node.getTotalLength();
+
+    //Return function
+    return function(d, i, a) {
+        return function(t) {
+            //Get point at length
+            let p = node.getPointAtLength(t * l);
+
+            //Return translation
+            return p.x;
+        };
+    };
+
+}
+
+function translateAlongY(node) {
+    //Get total length of path
+    let l = node.getTotalLength();
+
+    //Return function
+    return function(d, i, a) {
+        return function(t) {
+            //Get point at length
+            let p = node.getPointAtLength(t * l);
+
+            //Return translation
+            return p.y;
+        };
+    };
+
 }
 
 //TODO: Check if paths need to be updated
