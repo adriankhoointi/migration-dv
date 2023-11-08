@@ -62,11 +62,12 @@ function yScale(data){
     return y;
 }
 
-function pointerMoved(event, data, points, dot, svg) {
+function pointerMoved(event, data, points, path, dot, svg) {
     const [xm, ym] = d3.pointer(event);
     const i = d3.leastIndex(points, ([x, y]) => Math.hypot(x - xm, y - ym));
     const [x, y, k] = points[i];
 
+    path.style("stroke", ({z}) => z === k ? null : "#ddd").filter(({z}) => z === k).raise();
     dot.attr("transform", `translate(${x},${y})`);
     dot.select("text").text(k);
     svg.property("value", data[i]).dispatch("input", {bubbles: true});
@@ -141,7 +142,7 @@ function enter(svg, data){
         .attr("y", -8);
 
     let pointerentered = () => pointerEntered(path, dot);
-    let pointermoved = (event) => pointerMoved(event, data, points, dot, svg);
+    let pointermoved = (event) => pointerMoved(event, data, points, path, dot, svg);
     let pointerleft = () => pointerLeft(path, dot, svg);
 
     svg.on("pointerenter", pointerentered)
