@@ -36,7 +36,7 @@
   <style>
     .show-bg .annotation-note-bg {
       fill: white;
-      fill-opacity: 0.95;
+      fill-opacity: 0.90;
     }
   </style>
 
@@ -161,7 +161,7 @@
                 
                 <!-- Description -->
                 <p>This is an animated geographical network visualisation that depicts the primary emigration destinations of South East Asians. The indicator used for the number of migrations is from the countries in the South East Asian region to countries with the <strong>"High-Income Economies"</strong> classification by <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups" target="_blank">World Bank</a>.</p>
-                <p>To use the visualisation, <strong>click and drag</strong> to navigate around the globe, <strong>scroll</strong> to zoom, and <strong>click on a country</strong> to display emigrations indicated by its flight path.</p>
+                <p>To use the visualisation, <strong>click and drag</strong> to navigate around the globe, <strong>scroll</strong> to zoom, <strong>click on a country</strong> to display emigrations indicated by its flight path, and <strong>mouse over</strong> flight paths to see its migration numbers.</p>
 
               </div>
             </div>
@@ -177,7 +177,6 @@
                   <h5 class="card-title fw-semibold mb-4">Visualisation</h5>
                   <!-- PLACE VISUALISATION TAG HERE - FROM YOUR D3 JS -->
                   <div id="data-vis" style="width: 100%;">
-                    <!-- TODO: Add Data Visualisation -->
                   </div>
 
                   <!-- Source to Destination Card -->
@@ -276,7 +275,7 @@
                           </div>
                           <div>
                             <h6 class="fs-2 text-nowrap">Publication Date:</h6>
-                            <p class="fs-1">26<sup>th</sup> October 2023</p>
+                            <p class="fs-1">8<sup>th</sup> November 2023</p>
                           </div>
                         </div>
                       </div>
@@ -301,6 +300,7 @@
                       <p><i class="ti ti-square-filled pe-2" style="color:#00ADEF"></i>Source</p>
                       <p><i class="ti ti-square-filled pe-2" style="color:#EF4200"></i>Destination <small>(except Brunei & Singapore)</small></p>
                       <p><i class="ti ti-square-filled pe-2" style="color:#999999"></i>Other Countries</p>
+                      <p><i class="ti ti-plane-departure pe-2" style="color:#0036EF; font-size: 1.2em;"></i>Number of Migrations <small>(every 500,000)</small></p>
                     </div>
                   </div>
                 </div>
@@ -315,9 +315,15 @@
             <div class="card w-100">
               <div class="card-body p-4">
                 <h5 class="card-title fw-semibold mb-4">Context</h5>
-                <div id="">
+                <div id="context">
                   <p>
-                    Provide background, context and purpose for the visualisation here. 
+                    It is apparent that brain drain is a significant issue within the <strong>South East Asian</strong> region, with many highly educated or highly skilled professionals leaving their home countries in search of better work opportunities abroad.
+                    <br>
+                    <br>To better understand this phenomenon, the geographical data visualisation created above shows the <strong>source and destination</strong> of these migrants.
+                    <br>
+                    <br>By mapping out the flow of emigrations due to brain drain within South East Asia, we can identify <strong>countries that are affected by brain drain</strong> and the <strong>primary destinations</strong> of these emigrating individuals. 
+                    <br>
+                    <br>The visualisation <strong>may uncover underlying factors and motivations</strong> that contribute to brain drain, such as the lack of job opportunities, low wages, poor working conditions, poor economic growth and political stability.
                   </p>
                 </div>
               </div>
@@ -325,16 +331,58 @@
           </div>
         </div>
     
-        <!-- Summary -->
+        <!-- Key Findings -->
         <div class="row"> 
           <div class="d-flex align-items-stretch">
             <div class="card w-100">
               <div class="card-body p-4">
                 <h5 class="card-title fw-semibold mb-4">Key Findings</h5>
-                <div id="">
-                  <p>
-                    Highlight your most interesting findings here.
-                  </p>
+                <div id="key-findings">
+                  <p class="card-text">This section highlights all key findings found within the visualisation above.</p>
+
+                  <div class="row">
+                    <div class="col-6">
+
+                      <!-- COLUMN 1 -->
+                      <div class="card">
+                        <div class="card-body">
+                          <p class="card-text" style="font-size: 1.2em;">At least</p>
+                          <h5 class="card-title fw-semibold" style="font-size: 8em; color: #EF4200;">71%</h5>
+                          <p class="card-text" style="font-size: 1.2em;">of <strong>Malaysia's</strong> brain drain goes to <strong>Singapore</strong></p>
+                          <p>Despite having a smaller geographical landmass, Singapore's strong economy and its close proximity to Malaysia managed to lure most Malaysians away from their home country.</p>
+                          <p><small><em>Could it be due to the 3.50 exchange rate?</em></small></p>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="col-6">
+
+                      <!-- COLUMN 2 -->
+                      <div class="card">
+                        <div class="card-body">
+                          <p class="card-text" style="font-size: 1.2em;">Only approximately</p>
+                          <h5 class="card-title fw-semibold" style="font-size: 8em; color: #00ADEF;">13.6%</h5>
+                          <p class="card-text" style="font-size: 1.2em;">of <strong>Myanmar's</strong> emigrations are due to <strong>brain drain</strong></p>
+                          <p>Myanmar, one of the countries with the <strong>most number of emigrations (12,000,000)</strong>, has one of the lowest number of emigrations due to brain drain.</p>
+                          <p><strong>Saudi Arabia</strong> is the main country causing brain drain in Myanmar.</p>
+                          <p><small><em>Perhaps Saudi Arabia has been importing skilled construction labour from Myanmar?</em></small></p>
+                        </div>
+                      </div>
+
+                    </div>
+
+
+                  </div>
+
+                  <figure>
+                    <blockquote class="blockquote">
+                      The grass is always greener on the other side.
+                    </blockquote>
+                    <figcaption class="blockquote-footer">
+                      Quoted from <cite title="Source Title">Cambridge Dictionary</cite>
+                    </figcaption>
+                  </figure>
                 </div>
               </div>
             </div>
