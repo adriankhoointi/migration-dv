@@ -93,6 +93,9 @@ function enter (svg) {
                     .attr("stroke", "#000")
                     .attr("stroke-width", 0.2);
 
+    //TODO: HANDLE DRAG AND ZOOM BEHAVIOUR WITH ANIMATIONS
+    //TODO: Redraw path but can update animations on the fly if possible
+
     //Define drag behaviour - allows user to rotate globe
     svg.call(d3.drag().on('drag', _.throttle((event) => {
         //Get current rotation
@@ -337,44 +340,97 @@ function enter (svg) {
                         .style("stroke-width", 0.5)
                         .style("stroke-opacity", 0.08);
 
-    let markers = svg.selectAll("worldmarks")
+    let markersGroup = svg.append("g")
+                            .attr("class", "markers");
+
+    //Dynamically draw icon based on migration numbers
+    function drawicon(selection) {
+
+        //Draw different amount of icons for each datum in selection
+        selection.each(function(d) {
+            //Calculate number of icons to draw (every 500,000 migrants = 1 icon)
+            let numicons = Math.ceil(d.migrationtotal / 500000);
+
+            for (let i = 0; i < numicons; i++) {
+                d3.select(this)
+                    .append("svg") //Plane departure icon
+
+                    //To find back in other functions
+                    .attr("class",function(d) { 
+                        return "origin_" + d.origin_code + " destination_" + d.destination_code;
+                    })
+
+                    //Styling
+                    .attr("fill", "none")
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 1)
+                    .attr("stroke-opacity", 0.3)
+
+                    //Position
+                    .attr("x", function(d) {
+                        let origin = [d.origin_long, d.origin_lat];
+
+                        return projection(origin)[0];
+                    })
+                    .attr("y", function(d) {
+                        let origin = [d.origin_long, d.origin_lat];
+                        return projection(origin)[1];
+                    })
+
+                    .append("path")
+                    .attr("d", "M14.639 10.258l4.83 -1.294a2 2 0 1 1 1.035 3.863l-14.489 3.883l-4.45 -5.02l2.897 -.776l2.45 1.414l2.897 -.776l-3.743 -6.244l2.898 -.777l5.675 5.727z")
+                    .select(function() { return this.parentNode; }) //Go back 1 level
+                    .append("path")
+                    .attr("d", "M3 21h18")
+                    .select(function() { return this.parentNode; }) //Go back 1 level
+            }
+        });
+    }
+
+    //Temporary data store for markers
+    //TODO: Find a better way to do this, it will all draw the same shit
+    //TODO: Try do inline or pass variable in the same method using function(d) at call
+    let tempdata;
+
+    //Create plane markers
+    let markers = markersGroup.selectAll("worldmarks")
                         .data(filtereddata)
                         .enter()
-                        .append("circle")
-                        .attr("class",function(d) { //To find back in other functions
-                            return "origin_" + d.origin_code + " destination_" + d.destination_code;
-                        })
-                        .attr("r", 10)
-                        .attr("fill", "black")
-                        //opacity
-                        .attr("opacity", 0.5)
-                        .attr("cx", function(d) {
-                            let origin = [d.origin_long, d.origin_lat];
-
-                            return projection(origin)[0];
-                        })
-                        .attr("cy", function(d) {
-                            let origin = [d.origin_long, d.origin_lat];
-                            return projection(origin)[1];
-                        });
+                        //Dynamic draw function
+                        .call(drawicon);
 
     //Animate markers
-    markers.each(function() {
-//TODO: FIX THIS LATER
-        let c = d3.select(this).attr("class");
-        let c2 = c.split(" ");
-        let cstr = "." + c2[0] + "." + c2[1];
+    //TODO: FIX ANIMATION
+    //TODO: Might have to remove multiple plane draw due to lack of memory
+    // markers.selectAll("svg").each(function() {
+    //     let c = d3.select(this).attr("class");
+    //     let c2 = c.split(" ");
+    //     let cstr = "." + c2[0] + "." + c2[1];
 
-        let node = d3.select(".connections").select(cstr).node();
+    //     markers.selectAll("svg").selectAll(cstr);
 
-        //Animate each marker
-        d3.select(this)
-            .transition()
-            .ease(d3.easeLinear)
-            .duration(25000)
-            .attrTween("cx", translateAlongX(node))
-            .attrTween("cy", translateAlongY(node));
-    });
+    //     console.log(markers.selectAll("svg").selectAll(cstr));
+    // })
+
+//     markers.each(function() {
+// //TODO: FIX THIS LATER
+//         let c = d3.select(this).attr("class");
+//         let c2 = c.split(" ");
+//         let cstr = "." + c2[0] + "." + c2[1];
+
+//         let node = d3.select(".connections").select(cstr).node();
+
+//         console.log(d3.select(this));
+
+//         //Animate each marker
+//         d3.select(this)
+//             .transition()
+//             .delay((d, i) => (i * 1500))
+//             .ease(d3.easeLinear)
+//             .duration(40000)
+//             .attrTween("x", translateAlongX(node))
+//             .attrTween("y", translateAlongY(node));
+//     });
 
 
     //Animate connections
@@ -389,13 +445,13 @@ function enter (svg) {
                 .transition()
                 .ease(d3.easeLinear)
                 .attr("stroke-dashoffset", 0)
-                .duration(25000);
+                .duration(40000);
         });
     };
 
     //Animation loop
     animation(); // Start the animation
-    setInterval(animation, 25100); // Call the animation function every 10 seconds
+    setInterval(animation, 40100); // Call the animation function every 10 seconds
 
     //Close Country Card
     d3.select("#destinationCard").select(".btn-close")
@@ -431,7 +487,7 @@ function translateAlongX(node) {
             let p = node.getPointAtLength(t * l);
 
             //Return translation
-            return p.x;
+            return p.x * 0.975; //Multiply by shift factor
         };
     };
 
@@ -448,7 +504,7 @@ function translateAlongY(node) {
             let p = node.getPointAtLength(t * l);
 
             //Return translation
-            return p.y;
+            return p.y * 0.97; //Multiply by shift factor
         };
     };
 
