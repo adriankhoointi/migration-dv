@@ -450,6 +450,9 @@ function enter (svg) {
                 d3.selectAll(".connections").selectAll(".destination_" + clickedDestination)
                     .style("stroke-opacity", 0.1);
             }
+            else {
+                window.alert("Please click on 'Source' or 'Destination' countries only.");
+            }
 
         });
 
