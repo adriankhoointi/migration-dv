@@ -2,6 +2,8 @@
 let worldjson;
 let migrationDS;
 
+//TODO: Add clear elements button if free
+
 //SCRIPT PROPERTIES
 //Define width and height of visualisation
 let w = d3.select("#data-vis").node().getBoundingClientRect().width;
@@ -195,7 +197,6 @@ function enter (svg) {
                     //Hide other paths
                     d3.selectAll(".connections").selectAll("path")
                     .filter(function() {
-                        console.log(this.classList);
                         return !this.classList.contains("origin_" + clickedSource);
                     })
                     .remove();
@@ -211,7 +212,6 @@ function enter (svg) {
                     //Hide other paths
                     d3.selectAll(".connections").selectAll("path")
                     .filter(function() {
-                        console.log(this.classList);
                         return !this.classList.contains("destination_" + clickedDestination);
                     })
                     .remove();
@@ -595,7 +595,7 @@ function enter (svg) {
                             .attr("fill-opacity", 1)
                             .attr("stroke-opacity", 1)
                             .ease(d3.easePolyInOut.exponent(1))
-                            .duration(20000)
+                            .duration(10000)
                             .attrTween("x", translateAlongX(cstr))
                             .attrTween("y", translateAlongY(cstr));
             
