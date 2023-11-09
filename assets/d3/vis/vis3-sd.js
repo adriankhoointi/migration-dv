@@ -118,6 +118,7 @@ function enter (svg) {
 
         //Remove hover annotations (Prevent confusion)
         svg.selectAll(".hover-annotation").remove();
+        svg.select(".path-annotation").remove();
 
         //Remove Markers
         removeMarkers();
@@ -179,6 +180,7 @@ function enter (svg) {
 
                 //Remove hover annotations (Prevent confusion)
                 svg.selectAll(".hover-annotation").remove();
+                svg.select(".path-annotation").remove();
 
                 //Remove Markers
                 removeMarkers();
