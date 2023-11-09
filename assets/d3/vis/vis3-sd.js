@@ -10,11 +10,17 @@ let h = 600;
 //Define mouse sensitivity
 const sensitivity = 75;
 
-//Define annotation type
-const annotype = d3.annotationLabel;
-
 //Get user locale
 const locale = navigator.languages[0] || navigator.language || "en-GB";
+
+//SCRIPT VARIABLES
+//Get clicked source
+let clickedSource = "";
+
+let clickedDestination = "";
+
+//Animation timer
+let flightTimer;
 
 //FUNCTION START
 //Initalise visualisation
@@ -111,10 +117,54 @@ function enter (svg) {
 
         //Update path
         path = d3.geoPath().projection(projection);
-        svg.selectAll("path").attr("d", path);
+        svg.selectAll(".countries").selectAll("path").attr("d", path);
 
         //Remove hover annotations (Prevent confusion)
         svg.selectAll(".hover-annotation").remove();
+
+        //Remove Markers
+        removeMarkers();
+
+        //Remove Connections
+        svg.selectAll(".connections").remove();
+
+        //Redraw Connections
+        drawConnections();
+
+        //Check if any country is still filtered
+        if (clickedSource != "") {
+            //Redraw Markers
+            drawMarkers(clickedSource);
+
+            //Hide other paths
+            d3.selectAll(".connections").selectAll("path")
+            .filter(function() {
+                return !this.classList.contains("origin_" + clickedSource);
+            })
+            .remove();
+
+            //Highlight paths
+            d3.selectAll(".connections").selectAll(".origin_" + clickedSource)
+                .style("stroke-opacity", 0.3);
+
+        } else if (clickedDestination != "") {
+            //Redraw Markers
+            drawMarkers(clickedDestination);
+
+            //Hide other paths
+            d3.selectAll(".connections").selectAll("path")
+            .filter(function() {
+                return !this.classList.contains("destination_" + clickedDestination);
+            })
+            .remove();
+
+            //Highlight paths
+            d3.selectAll(".connections").selectAll(".destination_" + clickedDestination)
+            .style("stroke-opacity", 0.3);
+
+        };
+
+        //TODO: Redraw differently if clicked country
 
         }, 50, {'trailing': true})
         ))
@@ -127,13 +177,57 @@ function enter (svg) {
 
                 //Update path
                 path = d3.geoPath().projection(projection);
-                svg.selectAll("path").attr("d", path);
+                svg.selectAll(".countries").selectAll("path").attr("d", path);
 
                 //Update globe radius
                 globe.attr("r", projection.scale());
 
                 //Remove hover annotations (Prevent confusion)
                 svg.selectAll(".hover-annotation").remove();
+
+                //Remove Markers
+                removeMarkers();
+
+                //Remove Connections
+                svg.selectAll(".connections").remove();
+
+                //Redraw Connections
+                drawConnections();
+
+                //Check if any country is still filtered
+                if (clickedSource != "") {
+                    //Redraw Markers
+                    drawMarkers(clickedSource);
+
+                    //Hide other paths
+                    d3.selectAll(".connections").selectAll("path")
+                    .filter(function() {
+                        console.log(this.classList);
+                        return !this.classList.contains("origin_" + clickedSource);
+                    })
+                    .remove();
+
+                    //Highlight paths
+                    d3.selectAll(".connections").selectAll(".origin_" + clickedSource)
+                        .style("stroke-opacity", 0.3);
+
+                } else if (clickedDestination != "") {
+                    //Redraw Markers
+                    drawMarkers(clickedDestination);
+
+                    //Hide other paths
+                    d3.selectAll(".connections").selectAll("path")
+                    .filter(function() {
+                        console.log(this.classList);
+                        return !this.classList.contains("destination_" + clickedDestination);
+                    })
+                    .remove();
+
+                    //Highlight paths
+                    d3.selectAll(".connections").selectAll(".destination_" + clickedDestination)
+                    .style("stroke-opacity", 0.3);
+
+                };
             }
             else {
                 //Reset zoom
@@ -206,6 +300,17 @@ function enter (svg) {
 
             //Check if clicked country is SEA
             if(d.properties.subregion == "South-Eastern Asia") {
+                //Reset filter first
+                unfilter();
+
+                //Assign clicked country
+                clickedSource = d.properties.iso_n3;
+                clickedDestination = "";
+
+                ////////////////////////////
+                //CARD LOGIC////////////////
+                ////////////////////////////
+
                 let destinationCard = d3.select("#destinationCard");
 
                 //Filter to the country
@@ -251,8 +356,43 @@ function enter (svg) {
                 //Hide high income country card
                 sourceCard.classed("d-none", true);
 
+                ////////////////////////////
+                //FLIGHT LOGIC//////////////
+                ////////////////////////////
+
+                //Redraw Connections
+                drawConnections();
+                
+                //Remove previous markers
+                removeMarkers();
+
+                //Redraw markers
+                drawMarkers(clickedSource); //Pass origin country code
+
+                //Hide other paths
+                d3.selectAll(".connections").selectAll("path")
+                .filter(function() {
+                    return !this.classList.contains("origin_" + clickedSource);
+                })
+                .remove();
+
+                //Highlight paths
+                d3.selectAll(".connections").selectAll(".origin_" + clickedSource)
+                    .style("stroke-opacity", 0.1);
+
             }
             else if (matchIncomeGroup) {
+                //Reset filter first
+                unfilter();
+
+                //Unassign clicked country
+                clickedSource = "";
+                clickedDestination = d.properties.iso_n3;
+
+                ////////////////////////////
+                //CARD LOGIC////////////////
+                ////////////////////////////
+
                 //Check if clicked country is not SEA
                 let sourceCard = d3.select("#sourceCard");
 
@@ -290,6 +430,30 @@ function enter (svg) {
                 let destinationCard = d3.select("#destinationCard");
                 //Hide destination country card
                 destinationCard.classed("d-none", true);
+
+                ////////////////////////////
+                //FLIGHT LOGIC//////////////
+                ////////////////////////////
+
+                //Redraw Connections
+                drawConnections();
+                
+                //Remove previous markers
+                removeMarkers();
+
+                //Redraw markers
+                drawMarkers(clickedDestination); //Pass origin country code
+
+                //Hide other paths
+                d3.selectAll(".connections").selectAll("path")
+                .filter(function() {
+                    return !this.classList.contains("destination_" + clickedDestination);
+                })
+                .remove();
+
+                //Highlight paths
+                d3.selectAll(".connections").selectAll(".destination_" + clickedDestination)
+                    .style("stroke-opacity", 0.1);
             }
 
         });
@@ -310,148 +474,221 @@ function enter (svg) {
         return bool;
     });
 
-    //Draw Connections (Airplane)
-    let connectionsGroup = svg.append("g")
-                                .attr("class", "connections");
 
-    let connections = connectionsGroup.selectAll("worldlinks")
-                        .data(filtereddata)
-                        .enter()
-                        .append("path")
-                        .attr("d", function(d) {    
-                            //Get origin and destination coordinates
-                            let origin = [d.origin_long, d.origin_lat];
-                            let destination = [d.destination_long, d.destination_lat];
+    //Draw Connections
+    function drawConnections() {
+        //Connection group
+        let connectionsGroup = svg.append("g")
+                                    .attr("class", "connections");
 
-                            //Check if origin and destination are not the same
-                            if (origin[0] != destination[0] && origin[1] != destination[1] && d.origin_code != "920" && d.destination_code != "900") {
-                                //Create a path between origin and destination
-                                let pathData = {type: "LineString", coordinates: [origin, destination]};
+        //Each connection
+        let connections = connectionsGroup.selectAll("worldlinks")
+                            .data(filtereddata)
+                            .enter()
+                            .append("path")
+                            .attr("d", function(d) {    
+                                //Get origin and destination coordinates
+                                let origin = [d.origin_long, d.origin_lat];
+                                let destination = [d.destination_long, d.destination_lat];
 
-                                //Return path
-                                return path(pathData);
-                            }
-                        })
-                        .attr("class",function(d) { //To find back in other functions
-                            return "origin_" + d.origin_code + " destination_" + d.destination_code;
-                        })
-                        .style("fill", "none")
-                        .style("stroke", "black")
-                        .style("stroke-width", 0.5)
-                        .style("stroke-opacity", 0.08);
+                                //Check if origin and destination are not the same
+                                if (origin[0] != destination[0] && origin[1] != destination[1] && d.origin_code != "920" && d.destination_code != "900") {
+                                    //Create a path between origin and destination
+                                    let pathData = {type: "LineString", coordinates: [origin, destination]};
 
-    let markersGroup = svg.append("g")
-                            .attr("class", "markers");
+                                    //Return path
+                                    return path(pathData);
+                                }
+                            })
+                            .attr("class",function(d) { //To find back in other functions
+                                return "origin_" + d.origin_code + " destination_" + d.destination_code;
+                            })
+                            .style("fill", "none")
+                            .style("stroke", "black")
+                            .style("stroke-width", 1)
+                            .style("stroke-opacity", 0.05)
+
+                            //When hovering on path
+                            .on("mouseover", function(event, d) {
+                                let path = d3.select(this);
+
+                                path.style("stroke-opacity", 1);
+
+                                //Create on hover annotation
+                                createPathHoverAnnotations(path, event, d);
+                            })
+                            .on("mouseout", function(event, d) {
+                                let path = d3.select(this);
+
+                                //Remove hover annotations
+                                _.delay(function() {
+                                    path.style("stroke-opacity", 0.05);
+                                    svg.select(".path-annotation").remove();
+                                }, 3000);
+                                
+                            });
+
+        //Animate connections
+        let animation = function() {
+            connections.each(function() {
+                //Animate each path
+                d3.select(this)
+                    .attr("stroke-dasharray", 5 + " " + 2)
+                    .attr("stroke-dashoffset", function(){
+                        return d3.select(this).node().getTotalLength();
+                    })
+                    .transition()
+                    .ease(d3.easeLinear)
+                    .attr("stroke-dashoffset", 0)
+                    .duration(40000);
+            });
+        };
+
+        //Animation loop
+        animation(); // Start the animation
+        setInterval(animation, 40100); // Call the animation function every 10 seconds
+    }
+
+    //Initial draw
+    drawConnections();
+
+    //Draw Markers
+    function drawMarkers(country) {
+        //Create markers group
+        let markersGroup = svg.append("g")
+        .attr("class", "markers");
+
+        //Create plane markers
+        let markers = markersGroup.selectAll("worldmarks")
+        .data(filtereddata)
+        .enter()
+        //Dynamic draw function
+        .call(drawicon, country); //TODO: Put parameters for clicked country here
+
+        //Animate markers
+        animateMarkers();
+    }
+
+    //Remove Markers
+    function removeMarkers() {
+        //Remove markers
+        d3.selectAll(".markers").remove();
+        stopMarkerAnimation();
+    }
+
+    //Markers animation
+    function animateMarkers() {
+        //Flush any animations before animating
+        stopMarkerAnimation();
+
+        //Don't launch animation if match previous
+        let matched = "";
+
+        //Animate markers //TODO: Use D3 Timer API
+        d3.select("g.markers").selectAll("svg").each(function() {
+            //TODO: FIX THIS LATER
+                let c = d3.select(this).attr("class");
+                let c2 = c.split(" ");
+                let cstr = "." + c2[0] + "." + c2[1];
+    
+                //Only launch animation if previous one is different and path exists
+                if (cstr != matched && d3.select(".connections").select(cstr).attr("d") != null) {
+                    try {
+
+                        _.delay(function(cstr) {
+                            //Animate each marker
+                            d3.select("g.markers").selectAll(cstr)
+                            .transition()
+                            .delay((d, i) => (i * 2000))
+                            .attr("fill-opacity", 1)
+                            .attr("stroke-opacity", 1)
+                            .ease(d3.easePolyInOut.exponent(1))
+                            .duration(20000)
+                            .attrTween("x", translateAlongX(cstr))
+                            .attrTween("y", translateAlongY(cstr));
+            
+                        }, 1000, cstr);
+        
+                        //Update matched
+                        matched = cstr;
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                }
+            });
+    }
+
+    function stopMarkerAnimation() {
+        //Stop animation
+        d3.selectAll(".markers").selectAll("*")
+        .interrupt();
+    }
 
     //Dynamically draw icon based on migration numbers
-    function drawicon(selection) {
+    function drawicon(selection, country) {
 
         //Draw different amount of icons for each datum in selection
         selection.each(function(d) {
-            //Calculate number of icons to draw (every 500,000 migrants = 1 icon)
-            let numicons = Math.ceil(d.migrationtotal / 500000);
+            //Check if clicked country is source or destination
 
-            for (let i = 0; i < numicons; i++) {
-                d3.select(this)
-                    .append("svg") //Plane departure icon
+            let dest = clickedDestination ? true : false;
+            let source = clickedSource ? true : false;
+    
+            let dbool = dest && d.destination_code == country;
+            let sbool = source && d.origin_code == country;
 
-                    //To find back in other functions
-                    .attr("class",function(d) { 
-                        return "origin_" + d.origin_code + " destination_" + d.destination_code;
-                    })
+            function draw(node) {
+                //Calculate number of icons to draw (every 500,000 migrants = 1 icon)
+                let numicons = Math.ceil(d.migrationtotal / 500000);
 
-                    //Styling
-                    .attr("fill", "none")
-                    .attr("stroke", "black")
-                    .attr("stroke-width", 1)
-                    .attr("stroke-opacity", 0.3)
+                for (let i = 0; i < numicons; i++) {
+                    d3.select(node)
+                        .append("svg") //Plane departure icon
+    
+                        //To find back in other functions
+                        .attr("class",function(d) { 
+                            return "origin_" + d.origin_code + " destination_" + d.destination_code;
+                        })
+    
+                        //Styling
+                        .attr("fill", "#0036EF")
+                        .attr("fill-opacity", 0)
+                        .attr("stroke", "#0036EF")
+                        .attr("stroke-width", 1)
+                        .attr("stroke-opacity", 0)
+    
+                        //Position
+                        .attr("x", function(d) {
+                            let origin = [d.origin_long, d.origin_lat];
+    
+                            return projection(origin)[0];
+                        })
+                        .attr("y", function(d) {
+                            let origin = [d.origin_long, d.origin_lat];
+                            return projection(origin)[1];
+                        })
+    
+                        .append("path")
+                        .attr("d", "M14.639 10.258l4.83 -1.294a2 2 0 1 1 1.035 3.863l-14.489 3.883l-4.45 -5.02l2.897 -.776l2.45 1.414l2.897 -.776l-3.743 -6.244l2.898 -.777l5.675 5.727z")
+                        .select(function() { return node.parentNode; }) //Go back 1 level
+                        .append("path")
+                        .attr("d", "M3 21h18")
+                        .select(function() { return node.parentNode; }) //Go back 1 level
+                }
+            }
 
-                    //Position
-                    .attr("x", function(d) {
-                        let origin = [d.origin_long, d.origin_lat];
-
-                        return projection(origin)[0];
-                    })
-                    .attr("y", function(d) {
-                        let origin = [d.origin_long, d.origin_lat];
-                        return projection(origin)[1];
-                    })
-
-                    .append("path")
-                    .attr("d", "M14.639 10.258l4.83 -1.294a2 2 0 1 1 1.035 3.863l-14.489 3.883l-4.45 -5.02l2.897 -.776l2.45 1.414l2.897 -.776l-3.743 -6.244l2.898 -.777l5.675 5.727z")
-                    .select(function() { return this.parentNode; }) //Go back 1 level
-                    .append("path")
-                    .attr("d", "M3 21h18")
-                    .select(function() { return this.parentNode; }) //Go back 1 level
+            //Check casse then draw
+            switch (true) {
+                case sbool:
+                    draw(this);
+                    break;
+                case dbool:
+                    draw(this);
+                    break;
             }
         });
     }
-
-    //Temporary data store for markers
-    //TODO: Find a better way to do this, it will all draw the same shit
-    //TODO: Try do inline or pass variable in the same method using function(d) at call
-    let tempdata;
-
-    //Create plane markers
-    let markers = markersGroup.selectAll("worldmarks")
-                        .data(filtereddata)
-                        .enter()
-                        //Dynamic draw function
-                        .call(drawicon);
-
-    //Animate markers
-    //TODO: FIX ANIMATION
-    //TODO: Might have to remove multiple plane draw due to lack of memory
-    // markers.selectAll("svg").each(function() {
-    //     let c = d3.select(this).attr("class");
-    //     let c2 = c.split(" ");
-    //     let cstr = "." + c2[0] + "." + c2[1];
-
-    //     markers.selectAll("svg").selectAll(cstr);
-
-    //     console.log(markers.selectAll("svg").selectAll(cstr));
-    // })
-
-//     markers.each(function() {
-// //TODO: FIX THIS LATER
-//         let c = d3.select(this).attr("class");
-//         let c2 = c.split(" ");
-//         let cstr = "." + c2[0] + "." + c2[1];
-
-//         let node = d3.select(".connections").select(cstr).node();
-
-//         console.log(d3.select(this));
-
-//         //Animate each marker
-//         d3.select(this)
-//             .transition()
-//             .delay((d, i) => (i * 1500))
-//             .ease(d3.easeLinear)
-//             .duration(40000)
-//             .attrTween("x", translateAlongX(node))
-//             .attrTween("y", translateAlongY(node));
-//     });
-
-
-    //Animate connections
-    let animation = function() {
-        connections.each(function() {
-            //Animate each path
-            d3.select(this)
-                .attr("stroke-dasharray", 5 + " " + 2)
-                .attr("stroke-dashoffset", function(){
-                    return d3.select(this).node().getTotalLength();
-                })
-                .transition()
-                .ease(d3.easeLinear)
-                .attr("stroke-dashoffset", 0)
-                .duration(40000);
-        });
-    };
-
-    //Animation loop
-    animation(); // Start the animation
-    setInterval(animation, 40100); // Call the animation function every 10 seconds
 
     //Close Country Card
     d3.select("#destinationCard").select(".btn-close")
@@ -460,6 +697,8 @@ function enter (svg) {
             d3.select("#destinationCard")
                 .classed("d-none", true);
 
+            //Reset
+            unfilter();
             //TODO: Unfilter the country here
         });
 
@@ -470,52 +709,89 @@ function enter (svg) {
             d3.select("#sourceCard")
                 .classed("d-none", true);
 
+            //Reset
+            unfilter();
             //TODO: Unfilter the country here
         });
+
+    function unfilter() {
+        //Reset clicked country
+        clickedSource = "";
+        clickedDestination = "";
+    
+        //Remove all markers
+        removeMarkers();
+    
+        //Remove Connections
+        svg.selectAll(".connections").remove();
+    
+        //Redraw Connections
+        drawConnections();
+    }
     
 }
 
+
+
 //Custom animation interpolation
-function translateAlongX(node) {
-    //Get total length of path
-    let l = node.getTotalLength();
+function translateAlongX(cstr) {
 
     //Return function
     return function(d, i, a) {
         return function(t) {
-            //Get point at length
-            let p = node.getPointAtLength(t * l);
+            try {
+                //Reassign node
+                let node = d3.select(".connections").select(cstr).node();
 
-            //Return translation
-            return p.x * 0.975; //Multiply by shift factor
+                //Get total length of path
+                let l = node.getTotalLength();
+
+                //Get point at length
+                let p = node.getPointAtLength(t * l);
+
+                //Return translation
+                return p.x * 0.975; //Multiply by shift factor
+            }
+            catch (error) {
+                d3.select(this).remove().interrupt();
+            }
         };
     };
 
 }
 
-function translateAlongY(node) {
-    //Get total length of path
-    let l = node.getTotalLength();
+function translateAlongY(cstr) {
 
     //Return function
     return function(d, i, a) {
         return function(t) {
-            //Get point at length
-            let p = node.getPointAtLength(t * l);
+            try {
+                //Reassign node
+                let node = d3.select(".connections").select(cstr).node();
 
-            //Return translation
-            return p.y * 0.97; //Multiply by shift factor
+                //Get total length of path
+                let l = node.getTotalLength();
+
+                //Get point at length
+                let p = node.getPointAtLength(t * l);
+
+                //Return translation
+                return p.y * 0.97; //Multiply by shift factor
+            }
+            catch {
+                d3.select(this).remove().interrupt();
+            }
+
         };
     };
 
 }
 
-//TODO: Check if paths need to be updated
-function updatePath() {
-
-}
-
+//When hovering on countries
 function createHoverAnnotations(path, d) {
+    //Define annotation type
+    const annotype = d3.annotationLabel;
+
     //Create annotation
     let annotation = [{
         note: {
@@ -544,6 +820,47 @@ function createHoverAnnotations(path, d) {
     d3.select("svg")
         .append("g")
         .attr("class", "annotation-group hover-annotation")
+        .call(makeAnnotations);
+}
+
+//When hovering on flight paths
+function createPathHoverAnnotations(path, event, d) {
+    //Define annotation type
+    const annotype = d3.annotationLabel;
+
+    //Find pointer location
+    let pointer = d3.pointer(event);
+
+    //Create annotation
+    let annotation = [{
+        note: {
+            title: d.origin_name + " to " + d.destination_name,
+            label: "Number of Migration (Overall): " + d.migrationtotal.toLocaleString(locale),
+            bgPadding: 20,
+        },
+        //To show bg, bg accessible in HTML
+        className: "show-bg",
+        //Set X and Y
+        x: pointer[0],
+        y: pointer[1],
+        dx: 50,
+        dy: -25,
+        color: ["#00EFB9"]
+    }];
+
+    //Set annotations properties
+    let makeAnnotations = d3.annotation()
+        .editMode(false)
+        .notePadding(20)
+        //Width of annotation
+        .textWrap(500)
+        .type(annotype)
+        .annotations(annotation);
+
+    //Draw annotations
+    d3.select("svg")
+        .append("g")
+        .attr("class", "annotation-group path-annotation")
         .call(makeAnnotations);
 }
 
