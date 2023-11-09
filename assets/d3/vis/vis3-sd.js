@@ -517,7 +517,7 @@ function enter (svg) {
                                 _.delay(function() {
                                     path.style("stroke-opacity", 0.05);
                                     svg.select(".path-annotation").remove();
-                                }, 3000);
+                                }, 1500);
                                 
                             });
 
