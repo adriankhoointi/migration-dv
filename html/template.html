@@ -4,9 +4,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Data Visualisation Project</title>
-  <link rel="shortcut icon" type="image/png" href="../assets/images/logos/favicon.png" />
+  <title>Data Visualisation Project - Template Page</title>
+
+  <!-- Browser Icon -->
+  <link rel="shortcut icon" type="image/png" href="../assets/images/logos/research-icon.png" />
+
+  <!-- Bootstrap -->
   <link rel="stylesheet" href="../assets/css/styles.min.css" />
+  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- JQuery -->
+  <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+
+  <!-- Side Navigation Menu - SimpleBar -->
+  <script src="../assets/js/sidebarmenu.js"></script>
+  <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
+
+  <!-- Custom -->
+  <script src="../assets/js/app.min.js"></script>
+  <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+
+  <!-- D3 Visualisation Script -->
+	<script src="../assets/d3/script/d3.v7.min.js"></script>
+
+  <!-- Custom D3 Visualisation Script -->
+  <!-- TODO: ADD YOUR OWN SCRIPT HERE -->
+
 </head>
 
 <body>
@@ -18,8 +41,8 @@
       <!-- Sidebar scroll-->
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
-          <a href="./landing.html" class="text-nowrap logo-img">
-            <img src="../assets/images/logos/dark-logo.svg" width="180" alt="" />
+          <a href="../" class="text-nowrap logo-img">
+            <img src="../assets/images/logos/BKK - Brand Logo - min.png" width="180" alt="EXODUS Data Visualisation Brand Logo" />
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i class="ti ti-x fs-8"></i>
@@ -33,7 +56,7 @@
               <span class="hide-menu">Home</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./index.html" aria-expanded="false">
+              <a class="sidebar-link" href="../" aria-expanded="false">
                 <span>
                   <i class="ti ti-layout-dashboard"></i>
                 </span>
@@ -45,43 +68,43 @@
               <span class="hide-menu">Visualisations</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-buttons.html" aria-expanded="false">
+              <a class="sidebar-link" href="../emigrations-over-time.html" aria-expanded="false">
                 <span>
-                  <i class="ti ti-article"></i>
+                  <i class="ti ti-timeline"></i>
                 </span>
-                <span class="hide-menu">Title 1</span>
+                <span class="hide-menu">Emigrations over Time</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
+              <a class="sidebar-link" href="../proportion-of-emigrations.html" aria-expanded="false">
                 <span>
-                  <i class="ti ti-alert-circle"></i>
+                  <i class="ti ti-map-pins"></i>
                 </span>
-                <span class="hide-menu">Title 2</span>
+                <span class="hide-menu">Proportion of Emigrations</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
+              <a class="sidebar-link" href="../source-and-destination.html" aria-expanded="false">
                 <span>
-                  <i class="ti ti-cards"></i>
+                  <i class="ti ti-plane-departure"></i>
                 </span>
-                <span class="hide-menu">Title 3</span>
+                <span class="hide-menu">Source and Destination</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-forms.html" aria-expanded="false">
+              <a class="sidebar-link" href="../profiling-emigrations.html" aria-expanded="false">
                 <span>
-                  <i class="ti ti-file-description"></i>
+                  <i class="ti ti-user-circle"></i>
                 </span>
-                <span class="hide-menu">Title 4</span>
+                <span class="hide-menu">Profiling Emigrations</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./ui-typography.html" aria-expanded="false">
+              <a class="sidebar-link" href="../correlation-of-profiles.html" aria-expanded="false">
                 <span>
-                  <i class="ti ti-typography"></i>
+                  <i class="ti ti-affiliate"></i>
                 </span>
-                <span class="hide-menu">Title 5</span>
+                <span class="hide-menu">Correlation of Profiles</span>
               </a>
             </li>
           </ul>
@@ -115,17 +138,22 @@
           <div class="d-flex align-items-strech">
             <div class="card w-100">
               <div class="card-body">
-                <div class="d-sm-flex d-block align-items-center justify-content-between mb-9">
+
+                <!-- Title and Subtitle -->
+                <div class="d-sm-flex d-block align-items-center justify-content-between">
                   <div class="mb-3 mb-sm-0">
-                    <h5 class="card-title fw-semibold">Title</h5>
-                  </div>
+                    <h4 class="card-title fw-semibold" style="font-size: 2em;"><span class="text-primary">Source</span><span class="text-muted"> and </span><span class="text-primary">Destination</span> of Emigrations</h4>
+                  </div>  
                 </div>
-                <div>
-                  <p>Description</p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                  </p>
-                </div>
+                <!-- Flavor Text -->
+                <p class = "text-dark"><small>Where do they go?</small></p>
+                <!-- End of Title and Subtitle -->
+                
+                <!-- Description -->
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+
               </div>
             </div>
           </div>
@@ -134,13 +162,17 @@
         <div class="row"> 
           <!-- D3 Visualisation row -->
           <div class="col-lg-10">
-            <div class="d-flex align-items-stretch">
-              <div class="card w-100">
+            <div class="">
+              <div class="card w-100 h-100">
                 <div class="card-body p-4">
                   <h5 class="card-title fw-semibold mb-4">Visualisation</h5>
+                  <!-- PLACE VISUALISATION TAG HERE - FROM YOUR D3 JS -->
+                  <!-- Remove placeholder text -->
                   <div id="">
                     <p>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                      <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                       <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                       <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                       <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
@@ -153,30 +185,36 @@
             </div>
           </div>
           
-          <!-- Sources column -->
+          <!-- Right-hand column -->
           <div class="col-lg-2">
+            <!-- Sources column -->
             <div class="row">
               <div class="col-lg-12">
                 <div class="card overflow-hidden">
                   <div class="card-body p-4">
-                    <h5 class="card-title mb-9 fw-semibold">Source:</h5>
+                    <h5 class="card-title mb-3 fw-semibold">Source:</h5>
                     <div class="row align-items-center">
                       <div class="col-8">
+                        <!-- Source start -->
                         <div class="row">
-                          <h7 class="fw-semibold mb-3">United Nations - International Migrant Stock</h7>
+
+                          <!-- Duplicate for Source -->
+                          <h7 class="fw-semibold mb-1 fs-2">United Nations - International Migrant Stock</h7>
                           <div class="d-flex align-items-center mb-3">
-                            <p class="text-dark me-1 fs-3 mb-0">Check it out</p>
-                            <a href="" class="fs-3 mb-0">here</a>
+                            <a href="#" class="fs-3 mb-0">Link</a>
                           </div>
+                          <!-- End Duplicate-->
+
                         </div>
+                        <!-- Source end -->
                         <div class="row">
                           <div>
-                            <h6>Author:</h6>
-                            <p>name</p>
+                            <h6 class="fs-2">Author:</h6>
+                            <p class="fs-1">name</p>
                           </div>
                           <div>
-                            <h6>Date of Publication:</h6>
-                            <span>2023</span>
+                            <h6 class="fs-2  text-nowrap">Publication Date:</h6>
+                            <p class="fs-1">26<sup>th</sup> October 2023</p>
                           </div>
                         </div>
                       </div>
@@ -190,25 +228,23 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Summary -->
-        <div class="row"> 
-          <div class="d-flex align-items-stretch">
-            <div class="card w-100">
-              <div class="card-body p-4">
-                <h5 class="card-title fw-semibold mb-4">Summary</h5>
-                <div id="">
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                  </p>
+            <!-- Legend -->
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="card overflow-hidden">
+                  <div class="card-body p-4">
+                    <h5 class="card-title mb-3 fw-semibold">Legend:</h5>
+                    <div class="row align-items-center">
+                      <span>insert legend here</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-    
+
         <!-- Context -->
         <div class="row"> 
           <div class="d-flex align-items-stretch">
@@ -217,7 +253,23 @@
                 <h5 class="card-title fw-semibold mb-4">Context</h5>
                 <div id="">
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    Provide background, context and purpose for the visualisation here. 
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Summary -->
+        <div class="row"> 
+          <div class="d-flex align-items-stretch">
+            <div class="card w-100">
+              <div class="card-body p-4">
+                <h5 class="card-title fw-semibold mb-4">Key Findings</h5>
+                <div id="">
+                  <p>
+                    Highlight your most interesting findings here.
                   </p>
                 </div>
               </div>
@@ -227,21 +279,11 @@
 
         <!-- Footer -->
         <div class="py-6 px-6 text-center">
-          <p class="mb-0 fs-4">Design and Developed by <a href="https://i.kym-cdn.com/entries/icons/original/000/043/780/black_man_laughing_in_the_dark.jpg" target="_blank" class="pe-1 text-primary text-decoration-underline">Adrian &amp; Sean</a> Distributed by <a href="https://github.com" target="_blank">Github</a></p>
+          <p class="mb-0 fs-4">Design and Developed by <a href="https://github.com/adriankhoointi/migration-dv/" target="_blank" class="pe-1 text-primary text-decoration-underline">Adrian &amp; Sean</a>© COS30045 Data Visualisation, 2023</p>
         </div>
       </div>
     </div>
   </div>
 
-
-
-  <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
-  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/sidebarmenu.js"></script>
-  <script src="../assets/js/app.min.js"></script>
-  <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-  <script src="../assets/libs/simplebar/dist/simplebar.js"></script>
-  <script src="../assets/js/dashboard.js"></script>
 </body>
-
 </html>
