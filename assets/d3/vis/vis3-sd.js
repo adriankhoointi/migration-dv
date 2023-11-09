@@ -5,7 +5,7 @@ let migrationDS;
 //SCRIPT PROPERTIES
 //Define width and height of visualisation
 let w = d3.select("#data-vis").node().getBoundingClientRect().width;
-let h = 600;
+let h = 800;
 
 //Define mouse sensitivity
 const sensitivity = 75;
@@ -68,8 +68,6 @@ async function loadDatasets() {
         };
     });
 
-    //TODO: Remove Debug data table
-    console.table(migrationDS, ["origin_code", "origin_name", "origin_lat", "origin_long", "destination_code", "destination_name", "destination_lat", "destination_long", "migration2000", "migration2005", "migration2010", "migration2015", "migration2020", "migrationtotal"])
 }
 
 function enter (svg) {
@@ -98,9 +96,6 @@ function enter (svg) {
                     //Set border of globe
                     .attr("stroke", "#000")
                     .attr("stroke-width", 0.2);
-
-    //TODO: HANDLE DRAG AND ZOOM BEHAVIOUR WITH ANIMATIONS
-    //TODO: Redraw path but can update animations on the fly if possible
 
     //Define drag behaviour - allows user to rotate globe
     svg.call(d3.drag().on('drag', _.throttle((event) => {
@@ -163,8 +158,6 @@ function enter (svg) {
             .style("stroke-opacity", 0.3);
 
         };
-
-        //TODO: Redraw differently if clicked country
 
         }, 50, {'trailing': true})
         ))
@@ -563,7 +556,7 @@ function enter (svg) {
         .data(filtereddata)
         .enter()
         //Dynamic draw function
-        .call(drawicon, country); //TODO: Put parameters for clicked country here
+        .call(drawicon, country);
 
         //Animate markers
         animateMarkers();
@@ -584,9 +577,8 @@ function enter (svg) {
         //Don't launch animation if match previous
         let matched = "";
 
-        //Animate markers //TODO: Use D3 Timer API
+        //Animate markers
         d3.select("g.markers").selectAll("svg").each(function() {
-            //TODO: FIX THIS LATER
                 let c = d3.select(this).attr("class");
                 let c2 = c.split(" ");
                 let cstr = "." + c2[0] + "." + c2[1];
@@ -699,7 +691,6 @@ function enter (svg) {
 
             //Reset
             unfilter();
-            //TODO: Unfilter the country here
         });
 
     //Close Country Card
@@ -711,7 +702,6 @@ function enter (svg) {
 
             //Reset
             unfilter();
-            //TODO: Unfilter the country here
         });
 
     function unfilter() {
