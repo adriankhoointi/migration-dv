@@ -1,4 +1,4 @@
-// Specify the chart’s dimensions.
+// Chart dimensions.
 let w = d3.select("#line-chart").node().getBoundingClientRect().width;
 let h = 600;
 const marginTop = 20;
@@ -106,9 +106,11 @@ function enter(svg, data) {
         .attr("text-anchor", "start")
         .text("Number of Emigration")
     );
-
+  
+  // Compute the points in pixel space as [x, y, z], where z is the name of the series.
   let points = data.map((d) => [xS(d.year), yS(d.emigration), d.origin]);
 
+  // Group the points by series.
   let groups = d3.rollup(
     points,
     (v) => Object.assign(v, { z: v[0][2] }),
@@ -138,6 +140,7 @@ function enter(svg, data) {
     .attr("stroke-linecap", "round");
 
   // Create dots for the seven years (1990-2020, 5 years interval)
+  // Add an invisible layer for the interactive tip.
   let dot = svg.append("g").attr("display", "none");
 
   dot
@@ -164,6 +167,7 @@ function enter(svg, data) {
 }
 
 // DEFINE CUSTOM MOUSE BEHAVIOURS
+// When the pointer moves, find the closest point, update the interactive tip, and highlight corresponding lines.
 async function pointerMoved(event, data, points, path, dot, svg) {
   const [xm, ym] = d3.pointer(event);
   const i = d3.leastIndex(points, ([x, y]) => Math.hypot(x - xm, y - ym));
