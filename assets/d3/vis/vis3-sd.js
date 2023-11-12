@@ -21,9 +21,6 @@ let clickedSource = "";
 
 let clickedDestination = "";
 
-//Animation timer
-let flightTimer;
-
 //FUNCTION START
 //Initalise visualisation
 async function init() {
