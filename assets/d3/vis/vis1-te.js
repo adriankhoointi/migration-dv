@@ -74,11 +74,15 @@ function yScale(data) {
 }
 
 function enter(svg, data) {
-  // TODO: Draw Chart elements
+  // TODO: zoom effect
 
   // Define Scale variables
   let xS = xScale(data);
   let yS = yScale(data);
+
+  const zoomLine = (yZoomScale) => d3.line()
+  .xS(function (d){ return xS(d.year); })
+  .yS(function (d){ return yZoomScale(d.emigration); });
 
   // Plot X-axis
   let xAxis = svg.append("g");
@@ -106,7 +110,7 @@ function enter(svg, data) {
         .attr("text-anchor", "start")
         .text("Number of Emigration")
     );
-  
+
   // Compute the points in pixel space as [x, y, z], where z is the name of the series.
   let points = data.map((d) => [xS(d.year), yS(d.emigration), d.origin]);
 
@@ -163,6 +167,9 @@ function enter(svg, data) {
     .on("pointerleave", pointerleft)
     .on("touchstart", (event) => event.preventDefault());
 
+  // Zoom effect
+  let zoomedIn = (event) => zoomInEvent();
+
   console.log(d3.select(".line-path").select("path").node());
 }
 
@@ -192,5 +199,10 @@ async function pointerLeft(path, dot, svg) {
   dot.attr("display", "none");
   svg.node().value = null;
   svg.dispatch("input", { bubbles: true });
+}
+
+// DEFINE ZOOM BEHAVIOUR
+async function zoomInEvent() {
+  
 }
 window.onload = init;
