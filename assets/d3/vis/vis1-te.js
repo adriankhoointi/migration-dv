@@ -8,7 +8,7 @@ const marginLeft = 40;
 let migrationDS;
 
 
-function init(){
+async function init(){
 
     migrationDS = d3.csv("../assets/d3/data/time-evolution/clean_ims_stock_evolution_by_origin_and_year_v4.csv",
     function(d){
@@ -30,7 +30,7 @@ function init(){
 }
 
 
-function lineChart(data){
+async function lineChart(data){
 
   var svg = d3.select("#data-vis")
                 .append("svg")
@@ -89,20 +89,25 @@ function pointerMoved(event, data, points, path, dot, svg) {
 function enter(svg, data){
     // TODO: Draw Chart elements
 
+    // FIXME: Assign color scheme
+    const colorScale = d3.scaleOrdinal()
+                        .domain(data, d => d.map(d.origin))
+                        .range(d3.schemePaired);
+
 
     // Define Scale variables
-    var xS = xScale(data);
-    var yS = yScale(data);
+    let xS = xScale(data);
+    let yS = yScale(data);
     
     // Plot X-axis
-    var xAxis = svg.append("g");
+    let xAxis = svg.append("g");
 
     xAxis.attr("transform", `translate(0, ${h - marginBottom})`)
         .call(d3.axisBottom(xS).ticks(w / 80).tickSizeOuter(0));
 
 
     // Plot Y-axis
-    var yAxis = svg.append("g");
+    let yAxis = svg.append("g");
 
     yAxis.attr("transform", `translate(${marginLeft}, 0)`)
         .call(d3.axisLeft(yS))
@@ -114,13 +119,13 @@ function enter(svg, data){
         .attr("text-anchor", "start")
         .text("Number of Emigration"));
 
-    var points = data.map((d) => [xS(d.year), yS(d.emigration), d.origin]);
+    let points = data.map((d) => [xS(d.year), yS(d.emigration), d.origin]);
 
-    var groups = d3.rollup(points, v => Object.assign(v, {z: v[0][2]}), d => d[2]);
+    let groups = d3.rollup(points, v => Object.assign(v, {z: v[0][2]}), d => d[2]);
 
-    var line = d3.line();
-    var path = svg.append("g")
-                    .attr("class", "noodle")
+    let line = d3.line();
+    let path = svg.append("g")
+                    .attr("class", "line-path")
                     .attr("fill", "none")
                     .attr("stroke", "steelblue")
                     .attr("stroke-width", "2.5")
@@ -132,10 +137,11 @@ function enter(svg, data){
                       .style("mix-blend-mode", "multiply")
                       .attr("d", line);
     
-    var dot = svg.append("g")
+    let dot = svg.append("g")
                 .attr("display", "none");
 
     dot.append("circle")
+        .attr("class", "circles")
         .attr("r", 2.5)
         .append("text")
         .attr("text-anchor", "middle")
@@ -150,6 +156,6 @@ function enter(svg, data){
         .on("pointerleave", pointerleft)
         .on("touchstart", event => event.preventDefault());
 
-    console.log(d3.select(".noodle").select("path").node());
+    console.log(d3.select(".line-path").select("path").node());
 }
 window.onload = init;
