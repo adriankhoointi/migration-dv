@@ -151,7 +151,7 @@ function enter(svg, data) {
     .append("circle")
     .attr("class", "circles")
     .attr("r", 2.5)
-    .append("text")
+    .append("text") // FIXME: text element representing name of country, currently inside circle element
     .attr("text-anchor", "middle")
     .attr("y", -8);
 
@@ -185,7 +185,7 @@ async function pointerMoved(event, data, points, path, dot, svg) {
     .filter(({ z }) => z === k)
     .raise();
   dot.attr("transform", `translate(${x},${y})`);
-  dot.select("text").text(k);
+  dot.select("text").text(k); // FIXME: select text element that is appended dot circle, and repalce with name of country belonging to line
   svg.property("value", data[i]).dispatch("input", { bubbles: true });
 }
 
