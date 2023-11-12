@@ -151,7 +151,8 @@ function enter(svg, data) {
     .append("circle")
     .attr("class", "circles")
     .attr("r", 2.5)
-    .append("text") // FIXME: text element representing name of country, currently inside circle element
+    .select(function() { return this.parentNode; }) //Go back 1 level
+    .append("text") // TODO: Ming Soo add further improvements
     .attr("text-anchor", "middle")
     .attr("y", -8);
 
