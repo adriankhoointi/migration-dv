@@ -37,6 +37,7 @@ async function init() {
     });
 }
 
+
 async function lineChart(data) {
   var svg = d3
     .select("#line-chart")
@@ -53,6 +54,8 @@ async function lineChart(data) {
 
   enter(svg, data);
 }
+
+
 // Scale function for x-axis
 function xScale(data) {
   const x = d3
@@ -175,7 +178,14 @@ function enter(svg, data) {
     .on("touchstart", (event) => event.preventDefault());
 
   // Zoom effect
-  let zoomedIn = (event) => zoomInEvent();
+  let zoomedIn = (event) => zoomed(event, svg, data, yAxis);
+  const zoom = d3.zoom()
+                .scaleExtent([1, 5])
+                .extent([[marginLeft, 0], [w - marginRight, h]])
+                .translateExtent([[marginLeft, -Infinity], [w - marginRight, Infinity]])
+                .on("zoom", zoomedIn);
+  svg.call(zoom);
+
 
   console.log(d3.select(".line-path").select("path").node());
 }
@@ -192,7 +202,7 @@ async function pointerMoved(event, data, points, path, dot, svg) {
     .filter(({ z }) => z === k)
     .raise();
   dot.attr("transform", `translate(${x},${y})`);
-  dot.select("text").text(k); // FIXME: select text element that is appended dot circle, and repalce with name of country belonging to line
+  dot.select("text").text(k); // TODO: SUBSTITUTE TEXT WITH CARD
   svg.property("value", data[i]).dispatch("input", { bubbles: true });
 }
 
@@ -209,7 +219,10 @@ async function pointerLeft(path, dot, svg) {
 }
 
 // DEFINE ZOOM BEHAVIOUR
-async function zoomInEvent() {
-  
+async function zoomed(event, svg, data, yAxis) {
+  svg.attr("transform", event.transform);
+  yAxis.scale(event.transform.rescaleY(yScale(data))); //FIXME: do not zoom axes, zoom is overflowing container
 }
+
+
 window.onload = init;
