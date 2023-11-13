@@ -6,7 +6,7 @@
 
 // Chart dimensions.
 let w = d3.select("#line-chart").node().getBoundingClientRect().width;
-let h = 600;
+let h = 758;
 const marginTop = 20;
 const marginRight = 20;
 const marginBottom = 30;
@@ -49,8 +49,6 @@ async function lineChart(data) {
       "style",
       "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;"
     );
-  // .style("background-color", "white");
-  // .attr("style", "max-width: 100%, height: auto;");
 
   enter(svg, data);
 }
