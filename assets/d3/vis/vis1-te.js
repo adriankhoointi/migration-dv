@@ -185,7 +185,7 @@ function enter(svg, data) {
   svg.call(zoom);
 
 
-  console.log(d3.select(".line-path").select("path").node());
+  // console.log(d3.select(".line-path").select("path").node());
 }
 
 // DEFINE CUSTOM MOUSE BEHAVIOURS
@@ -200,7 +200,8 @@ async function pointerMoved(event, data, points, path, dot, svg) {
     .filter(({ z }) => z === k)
     .raise();
   dot.attr("transform", `translate(${x},${y})`);
-  dot.select("text").text(k); // TODO: SUBSTITUTE TEXT WITH CARD
+  dot.select("text").text(k);
+  // console.log(k);
   svg.property("value", data[i]).dispatch("input", { bubbles: true });
 }
 
@@ -219,7 +220,7 @@ async function pointerLeft(path, dot, svg) {
 // DEFINE ZOOM BEHAVIOUR
 async function zoomed(event, svg, data, yAxis) {
   svg.attr("transform", event.transform);
-  yAxis.scale(event.transform.rescaleY(yScale(data))); //FIXME: do not zoom axes, zoom is overflowing container
+  yAxis.scale(event.transform.rescaleY(yScale(data))); //FIXME: do not zoom axes [how can I zoom the line areas only?], zoom is overflowing container
 }
 
 
