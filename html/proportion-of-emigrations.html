@@ -22,13 +22,26 @@
 
   <!-- Custom -->
   <script src="../assets/js/app.min.js"></script>
-  <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+
+  <!-- Lodash Optimisation -->
+  <script src="../assets/libs/lodash/lodash.js"></script>
 
   <!-- D3 Visualisation Script -->
 	<script src="../assets/d3/script/d3.v7.min.js"></script>
 
-  <!-- Custom D3 Visualisation Script -->
-  <!-- TODO: ADD YOUR OWN SCRIPT HERE -->
+  <!-- D3 Legend -->
+  <script src="../assets/d3/script/d3-legend.min.js"></script>
+
+  <!-- D3 Annotations Plugin -->
+  <script src="../assets/d3/script/d3-annotation.min.js"></script>
+
+  <!-- D3 Annotations Style -->
+  <style>
+    .show-bg .annotation-note-bg {
+      fill: white;
+      fill-opacity: 0.90;
+    }
+  </style>
 
 </head>
 
@@ -166,20 +179,29 @@
               <div class="card w-100 h-100">
                 <div class="card-body p-4">
                   <h5 class="card-title fw-semibold mb-4">Visualisation</h5>
-                  <!-- PLACE VISUALISATION TAG HERE - FROM YOUR D3 JS -->
-                  <!-- Remove placeholder text -->
-                  <div id="">
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      <br>    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </p>
+                  <div id="data-vis">
                   </div>
+
+                  <!-- Detailed Proportion Card -->
+                  <div id="detailCard" class="card position-absolute top-0 end-0 m-3 d-none">
+                    <div class="card-body p-3">
+                      <h5 class="card-title fw-semibold"><span class="clickedCountryName text-primary">Country</span><button type="button" class="btn-close float-end ms-3" aria-label="Close"></button></h5>
+                      <p class="card-subtitle text-body-secondary fw-semibold mb-2 clickedRegionName">Region Name</p>
+                      <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item" style="padding-left: 0;">
+                          <b>Proportion of Emigration per Population:</b> <span class="proportionOfEmigration">Placeholder Country</span>
+                          <br>
+                          <b>Number of Emigration per Population (every 1,000):</b> <span class="numberofEmigration">Placeholder Number</span>
+                        </li>
+                        <li class="list-group-item" style="padding-left: 0;">
+                          <b>Overall Emigrated (Brain Drain):</b> <span class = "overallEmigrationBrainDrain">Placeholder Number</span>
+                          <br>
+                          <b>Current Population of Country (as of 2020):</b> <span class = "currentPopulation">Placeholder Number</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -199,9 +221,33 @@
                         <div class="row">
 
                           <!-- Duplicate for Source -->
-                          <h7 class="fw-semibold mb-2 fs-2">United Nations - International Migrant Stock</h7>
+                          <h7 class="fw-semibold mb-1 fs-2 text-nowrap">United Nations - 
+                            <br>
+                            International Migrant
+                            <br>
+                            Stock</h7>
+                          <div class="d-flex align-items-center mb-2">
+                            <a href="https://www.un.org/development/desa/pd/content/international-migrant-stock" target="_blank" class="fs-3 mb-0">Link</a>
+                          </div>
+                          <!-- End Duplicate-->
+
+                          <!-- Duplicate for Source -->
+                          <h7 class="fw-semibold mb-1 fs-2 text-nowrap">United Nations - 
+                            <br>
+                            World Population
+                            <br>
+                            Prospects 2022</h7>
+                          <div class="d-flex align-items-center mb-2">
+                            <a href="https://population.un.org/wpp/Download/Standard/MostUsed/" target="_blank" class="fs-3 mb-0">Link</a>
+                          </div>
+                          <!-- End Duplicate-->
+
+                          <!-- Duplicate for Source -->
+                          <h7 class="fw-semibold mb-1 fs-2 text-nowrap">World Bank Country 
+                            <br>
+                            and Lending Groups</h7>
                           <div class="d-flex align-items-center mb-3">
-                            <a href="#" class="fs-3 mb-0">Link</a>
+                            <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups" target="_blank" class="fs-3 mb-0">Link</a>
                           </div>
                           <!-- End Duplicate-->
 
@@ -210,11 +256,11 @@
                         <div class="row">
                           <div>
                             <h6 class="fs-2">Author:</h6>
-                            <p class="fs-1">name</p>
+                            <p class="fs-1">Khoo Chee Seng, Adrian</p>
                           </div>
                           <div>
                             <h6 class="fs-2 text-nowrap">Publication Date:</h6>
-                            <p class="fs-1">26<sup>th</sup> October 2023</p>
+                            <p class="fs-1">8<sup>th</sup> November 2023</p>
                           </div>
                         </div>
                       </div>
@@ -236,7 +282,13 @@
                   <div class="card-body p-4">
                     <h5 class="card-title mb-3 fw-semibold">Legend:</h5>
                     <div class="row align-items-center">
-                      <span>insert legend here</span>
+                      <p class="text-muted" style="font-size: 0.8em;">Proportion of Emigration per Population (%)</p>
+
+                      <!-- Legend start -->
+                      <div id = "legend">
+                      </div>
+                      <!-- Legend end -->
+
                     </div>
                   </div>
                 </div>
@@ -285,5 +337,8 @@
     </div>
   </div>
 
+
+  <!-- Custom D3 Visualisation Script -->
+  <script src="../assets/d3/vis/vis2-prope.js"></script>
 </body>
 </html>
