@@ -108,9 +108,9 @@ function enter (svg) {
     //Set Up Globe Projection
     let projection = d3.geoOrthographic()
                     .center([0, 0]) //Sets the center of the map to South East Asia
-                    .rotate([-115.6628, -15.218]) //Centers map to equator
+                    .rotate([-115.6628, -10.218]) //Centers map to equator
                     .translate([w/2, h/2]) //Translates the map to the center of the SVG canvas
-                    .scale(650); //Sets the scale of the map
+                    .scale(750); //Sets the scale of the map
 
     //Define initial scale of map
     const initialScale = projection.scale();
