@@ -60,7 +60,7 @@ async function init() {
       }
       d3.select("#bar-chart").html(""); // Clear the existing chart
       // console.table(data,["migration_year","origin_name","emigrant_gender","emigration_count",]);
-      return StackedBarChart(data);
+      StackedBarChart(data);
     } else {
       console.log("No filter selected");
     }
@@ -151,7 +151,7 @@ function StackedBarChart(
   // Construct scales, axes, and formats.
   let maxAbsoluteValue = d3.max(data, d => Math.abs(d.emigration_count)); // Find the maximum absolute value in the data
   const xScale = xType([-maxAbsoluteValue, maxAbsoluteValue], xRange); // Produce symmetric horizontal axis
-  // const xScale = xType(xDomain, xRange); // Produce asymmetric horizontal axis to construct scales, axes, and formats
+  // const xScale = xType(xDomain, xRange); // Produce asymmetric horizontal axis
   const yScale = d3.scaleBand(yDomain, yRange).paddingInner(yPadding);
   const color = d3.scaleOrdinal(zDomain, colors);
   const xAxis = d3.axisTop(xScale).ticks(w / 80, xFormat);
