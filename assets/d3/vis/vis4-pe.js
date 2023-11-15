@@ -19,15 +19,54 @@ async function init() {
       migration_year: +d['Year'],
       origin_name: d['Origin'],
       emigrant_gender: d['Gender'],
-      emigration_count: +d['Emigration']
+      emigration_count: +d['Emigration'],
+      emigration_year: +d["Year"]
     };
   });
-  console.table(migrationDS, ["migration_year", "origin_name", "emigrant_gender", "emigration_count"]);
-
+  // console.table(migrationDS, ["migration_year", "origin_name", "emigrant_gender", "emigration_count"]);
 
   let data = migrationDS;
-
   StackedBarChart(data);
+
+  let input;
+  d3.selectAll(".filter-btn").on("click", function() {
+    let id = d3.select(this).attr("id");
+  
+    if (id != "" && id != undefined){
+      let input = id;
+      console.log(input);
+  
+      switch(input){
+        case "filter-2000":
+          data = migrationDS.filter(d => d.emigration_year == 2000);
+          break;
+        case "filter-2005":
+          data = migrationDS.filter(d => d.emigration_year == 2005);
+          break;
+        case "filter-2010":
+          data = migrationDS.filter(d => d.emigration_year == 2010);
+          break;
+        case "filter-2015":
+          data = migrationDS.filter(d => d.emigration_year == 2015);
+          break;
+        case "filter-2020":
+          data = migrationDS.filter(d => d.emigration_year == 2020);
+          break;
+        default:
+          data = migrationDS.filter(d => d.emigration_year == 2000);
+      }
+      // Clear the existing chart
+      d3.select("#bar-chart").html("");
+      console.table(data, ["migration_year", "origin_name", "emigrant_gender", "emigration_count"]);
+      return StackedBarChart(data);
+    }
+    else{
+      console.log("No filter selected");
+    }
+  });
+
+  // console.table(data, ["migration_year", "origin_name", "emigrant_gender", "emigration_count"]);
+
 }
 
 // Copyright 2021 Observable, Inc.
@@ -156,8 +195,6 @@ function StackedBarChart(data, {
 
   return Object.assign(svg.node(), {scales: {color}});
 }
-
-
 
 window.onload = init;
 
