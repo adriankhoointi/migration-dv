@@ -29,7 +29,7 @@ async function init() {
     }
   );
 
-  let data = migrationDS;
+  let data = migrationDS.filter((d) => d.emigration_year == 2020);
   StackedBarChart(data);
 
   d3.selectAll(".filter-btn").on("click", function () {
@@ -56,7 +56,7 @@ async function init() {
           data = migrationDS.filter((d) => d.emigration_year == 2020);
           break;
         default:
-          data = migrationDS.filter((d) => d.emigration_year == 2000);
+          data = migrationDS.filter((d) => d.emigration_year == 2020);
       }
       d3.select("#bar-chart").html(""); // Clear the existing chart
       // console.table(data,["migration_year","origin_name","emigrant_gender","emigration_count",]);
@@ -101,7 +101,7 @@ function StackedBarChart(
       ].filter((i) => i !== null);
     },
     xFormat, // a format specifier string for the x-axis
-    xLabel = "← MALE · GENDER · FEMALE →", // a label for the x-axis
+    xLabel = "← MALE · " + data[0].emigration_year + " · FEMALE →", // a label for the x-axis
     colors = d3.schemePaired, // array of colors
   } = {}
 ) {
@@ -204,7 +204,7 @@ function StackedBarChart(
     );
 
   // Add the bars to the SVG container
-  const bar = svg
+  var bar = svg
     .append("g")
     .selectAll("g")
     .data(series)
@@ -218,7 +218,7 @@ function StackedBarChart(
     .attr("width", ([x1, x2]) => Math.abs(xScale(x1) - xScale(x2)))
     .attr("height", yScale.bandwidth());
 
-  if (title) bar.append("title").text(({ i }) => title(i));
+  if (title){ bar.append("title").text(({ i }) => title(i)) };
 
   svg
     .append("g")
@@ -235,6 +235,7 @@ function StackedBarChart(
         })
     );
 
+    
   return Object.assign(svg.node(), { scales: { color } });
 }
 
