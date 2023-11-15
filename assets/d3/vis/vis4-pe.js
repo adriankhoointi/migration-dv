@@ -3,7 +3,7 @@
 // https://observablehq.com/@douglyuckling/diverging-stacked-bar-chart
 
 // TODO: Add transitions
-// TODO: Make axis takes max data and apply to both sides of scale
+// TODO: Make axis retrieve max data and apply to both sides of scale for every year
 
 // Chart dimensions.
 let w = d3.select("#bar-chart").node().getBoundingClientRect().width;
@@ -28,17 +28,16 @@ async function init() {
       };
     }
   );
-  // console.table(migrationDS, ["migration_year", "origin_name", "emigrant_gender", "emigration_count"]);
 
   let data = migrationDS;
   StackedBarChart(data);
 
-  let input;
   d3.selectAll(".filter-btn").on("click", function () {
     let id = d3.select(this).attr("id");
 
     if (id != "" && id != undefined) {
       let input = id;
+      console.log(input);
 
       switch (input) {
         case "filter-2000":
@@ -59,21 +58,13 @@ async function init() {
         default:
           data = migrationDS.filter((d) => d.emigration_year == 2000);
       }
-      // Clear the existing chart
-      d3.select("#bar-chart").html("");
-      console.table(data, [
-        "migration_year",
-        "origin_name",
-        "emigrant_gender",
-        "emigration_count",
-      ]);
+      d3.select("#bar-chart").html(""); // Clear the existing chart
+      // console.table(data,["migration_year","origin_name","emigrant_gender","emigration_count",]);
       return StackedBarChart(data);
     } else {
       console.log("No filter selected");
     }
   });
-
-  // console.table(data, ["migration_year", "origin_name", "emigrant_gender", "emigration_count"]);
 }
 
 // Copyright 2021 Observable, Inc.
