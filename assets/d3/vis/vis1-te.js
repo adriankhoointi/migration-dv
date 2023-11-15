@@ -118,7 +118,7 @@ function enter(svg, data) {
                   .call(yAxis)
 
                   //Remove extra line on y-axis
-                  .call(g => g.select(".domain").remove())
+                  .call(g => g.select(".domain"))
                   
                   //Adding y-axis title label
                   .call((g) =>
