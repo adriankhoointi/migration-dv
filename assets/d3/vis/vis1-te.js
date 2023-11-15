@@ -152,7 +152,7 @@ function enter(svg, data) {
     "#dcbeff",
     "#bfef45",
     "#fabed4",
-    "#469990",
+    "#4fcc8f",
     //Brunei
     //Cambodia
     //Indonesia
