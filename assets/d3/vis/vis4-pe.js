@@ -163,14 +163,19 @@ function StackedBarChart(
 
   // Compute titles.
   if (title === undefined) {
+    // Format the x-axis values
     const formatValue = xScale.tickFormat(100, xFormat);
+    // Define the title as a function that returns a string with Y, Z, and X values
     title = (i) => `${Y[i]}\n${Z[i]}\n${formatValue(Math.abs(X[i]))}`;
   } else {
+    // Create a map from the data
     const O = d3.map(data, (d) => d);
     const T = title;
+    // Define the title as a function that returns the result of calling T with the mapped data
     title = (i) => T(O[i], i, data);
   }
-
+  
+  // Create an SVG container with the specified width and height
   const svg = d3
     .select("#bar-chart")
     .append("svg")
@@ -179,28 +184,30 @@ function StackedBarChart(
     .attr("viewBox", [0, 0, w, h])
     .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
+  // Add the x-axis to the SVG container
   svg
     .append("g")
     .attr("transform", `translate(0,${marginTop})`)
     .call(xAxis)
-    .call((g) => g.select(".domain").remove())
+    .call((g) => g.select(".domain").remove()) // Remove the domain line
     .call((g) =>
       g
-        .selectAll(".tick line")
+        .selectAll(".tick line") // Select all tick lines
         .clone()
-        .attr("y2", h - marginTop - marginBottom)
-        .attr("stroke-opacity", 0.1)
+        .attr("y2", h - marginTop - marginBottom) // Set their y2 attribute
+        .attr("stroke-opacity", 0.1) // Set their stroke opacity
     )
     .call((g) =>
       g
-        .append("text")
-        .attr("x", xScale(0))
-        .attr("y", -22)
-        .attr("fill", "currentColor")
-        .attr("text-anchor", "middle")
-        .text(xLabel)
+        .append("text") // Append a text element
+        .attr("x", xScale(0)) // Position it at xScale(0)
+        .attr("y", -22) // Position it 22 units above the x-axis
+        .attr("fill", "currentColor") // Set its fill color
+        .attr("text-anchor", "middle") // Center the text
+        .text(xLabel) // Set its text content to xLabel
     );
 
+  // Add the bars to the SVG container
   const bar = svg
     .append("g")
     .selectAll("g")
