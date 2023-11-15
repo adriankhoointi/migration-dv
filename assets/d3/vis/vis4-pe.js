@@ -1,5 +1,6 @@
 // Templates
 // https://observablehq.com/@d3/diverging-stacked-bar-chart
+// https://observablehq.com/@douglyuckling/diverging-stacked-bar-chart
 
 // Chart dimensions.
 let w = d3.select("#bar-chart").node().getBoundingClientRect().width;
@@ -53,7 +54,7 @@ function StackedBarChart(data, {
   },
   xFormat, // a format specifier string for the x-axis
   xLabel = "← MALE · GENDER · FEMALE →", // a label for the x-axis
-  colors = d3.schemeTableau10, // array of colors
+  colors = d3.schemePaired, // array of colors
 } = {}) {
   // Compute values.
   const X = d3.map(data, x);
@@ -99,7 +100,7 @@ function StackedBarChart(data, {
   // Compute titles.
   if (title === undefined) {
     const formatValue = xScale.tickFormat(100, xFormat);
-    title = i => `${Y[i]}\n${Z[i]}\n${formatValue(X[i])}`;
+    title = i => `${Y[i]}\n${Z[i]}\n${formatValue(Math.abs(X[i]))}`;
   } else {
     const O = d3.map(data, d => d);
     const T = title;
