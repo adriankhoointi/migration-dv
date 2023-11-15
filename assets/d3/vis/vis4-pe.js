@@ -29,8 +29,8 @@ async function init() {
     }
   );
 
-  let data = migrationDS.filter((d) => d.emigration_year == 2020);
-  StackedBarChart(data);
+  let data = migrationDS.filter((d) => d.emigration_year == 2020); // Hold the default data
+  StackedBarChart(data); // Draw the chart with the default data
 
   d3.selectAll(".filter-btn").on("click", function () {
     let id = d3.select(this).attr("id");
