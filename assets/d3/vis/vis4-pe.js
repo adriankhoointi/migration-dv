@@ -2,9 +2,6 @@
 // https://observablehq.com/@d3/diverging-stacked-bar-chart
 // https://observablehq.com/@douglyuckling/diverging-stacked-bar-chart
 
-// TODO: Add transitions
-// TODO: Make axis retrieve max data and apply to both sides of scale for every year
-
 // Chart dimensions.
 let w = d3.select("#bar-chart").node().getBoundingClientRect().width;
 let h = 758;
