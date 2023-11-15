@@ -6,12 +6,15 @@
 
 // Chart dimensions.
 let w = d3.select("#line-chart").node().getBoundingClientRect().width;
-let h = 758;
-const marginTop = 20;
-const marginRight = 20;
+let h = 800;
+const marginTop = 30;
+const marginRight = 50;
 const marginBottom = 30;
-const marginLeft = 40;
+const marginLeft = 80;
 let migrationDS;
+
+//Get user locale
+const locale = navigator.languages[0] || navigator.language || "en-GB";
 
 async function init() {
   migrationDS = d3
@@ -37,6 +40,18 @@ async function init() {
     });
 }
 
+//Dynamic resize
+async function resize() {
+  //Remove SVG
+  d3.select("svg").remove();
+
+  //Reset width
+  w = d3.select("#line-chart").node().getBoundingClientRect().width;
+
+  //Redraw visualisation
+  await lineChart(migrationDS);
+}
+
 
 async function lineChart(data) {
   var svg = d3
@@ -47,7 +62,7 @@ async function lineChart(data) {
     .attr("viewBox", [0, 0, w, h])
     .attr(
       "style",
-      "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;"
+      "max-width: 100%; height: auto; overflow: hidden; font: 10px sans-serif;"
     );
 
   enter(svg, data);
@@ -81,42 +96,39 @@ function yScale(data) {
 }
 
 function enter(svg, data) {
-  // TODO: zoom effect
-
   // Define Scale variables
   let xS = xScale(data);
   let yS = yScale(data);
 
-  const zoomLine = (yZoomScale) => d3.line()
-  .xS(function (d){ return xS(d.year); })
-  .yS(function (d){ return yZoomScale(d.emigration); });
+  //Plotting  X Axis
+  let xAxis = d3.axisBottom(xS)
+                  .ticks(5) //1 tick every 5 years
+                  .tickSizeOuter(0)
+                  .tickFormat(d3.format("d")) //Format to show year in full;
+  
+  let gXAxis = svg.append("g")
+                  .attr("transform", `translate(0, ${h - marginBottom})`)
+                  .call(xAxis);
 
-  // Plot X-axis
-  let xAxis = svg.append("g");
+  //Plotting Y Axis
+  let yAxis = d3.axisLeft(yS);
 
-  xAxis.attr("transform", `translate(0, ${h - marginBottom})`).call(
-    d3
-      .axisBottom(xS)
-      .ticks(w / 80)
-      .tickSizeOuter(0)
-  );
+  let gYAxis = svg.append("g")
+                  .attr("transform", `translate(${marginLeft}, 0)`)
+                  .call(yAxis)
 
-  // Plot Y-axis
-  let yAxis = svg.append("g");
-
-  yAxis
-    .attr("transform", `translate(${marginLeft}, 0)`)
-    .call(d3.axisLeft(yS))
-    .call((g) => g.select(".domain").remove())
-    .call((g) =>
-      g
-        .append("text")
-        .attr("x", -marginLeft)
-        .attr("y", 10)
-        .attr("fill", "black")
-        .attr("text-anchor", "start")
-        .text("Number of Emigration")
-    );
+                  //Remove extra line on y-axis
+                  .call(g => g.select(".domain").remove())
+                  
+                  //Adding y-axis title label
+                  .call((g) =>
+                    g.append("text")
+                    .attr("x", -marginLeft)
+                    .attr("y", marginTop - 20)
+                    .attr("fill", "black")
+                    .attr("text-anchor", "start")
+                    .text("Number of Emigration")
+                  );
 
   // Compute the points in pixel space as [x, y, z], where z is the name of the series.
   let points = data.map((d) => [xS(d.year), yS(d.emigration), d.origin]);
@@ -128,14 +140,57 @@ function enter(svg, data) {
     (d) => d[2]
   );
 
-  // Define color scale
-  const colorScale = d3.scaleOrdinal().domain(groups).range(d3.schemePaired);
+  //TODO: Set custom colours for each country
+  //Custom colour scheme
+  let customScheme = [
+    "#e41a1c", //Brunei
+    "#377eb8", //Cambodia
+    "#4daf4a", //Indonesia
+    "#984ea3", //Laos
+    "#00FF00", //Malaysia
+    "#ffff33", //Myanmar
+    "#a65628", //Philippines
+    "#f781bf", //Singapore
+    "#999999", //Thailand
+    "#a6cee3", //Timor-Leste
+    "#b2df8a" //Vietnam
+  ];
 
-  // Set line
+  // Define color scale
+  let colorScale = d3.scaleOrdinal()
+                    .domain(Array.from(groups.keys()))
+                    .range(customScheme);
+
+  // Define line
   let line = d3.line();
+
+  //Define clipping region
+  let clip = svg.append("defs").append("clipPath")
+                .attr("id", "clip")
+                .append("rect")
+                .attr("width", w - marginRight - marginLeft)
+                .attr("height", h - marginBottom - marginTop)
+                .attr("x", marginLeft)
+                .attr("y", marginTop);
+
+
   // Define line path
   let path = svg
     .append("g")
+    .attr("class", "line-graph")
+    .attr("clip-path", "url(#clip)")
+
+  //Allow zoom event to occur here (Create region for zooming)
+    .append("rect")
+    .attr("width", w - marginRight - marginLeft)
+    .attr("height", h - marginBottom - marginTop)
+    .attr("x", marginLeft)
+    .attr("y", marginTop)
+    .attr("fill-opacity", 0)
+
+    .select(function() { return this.parentNode; }) //Go back 1 level
+  
+  //Continue plotting the line
     .selectAll("line-path")
     .data(groups.values())
     .join("path")
@@ -143,9 +198,11 @@ function enter(svg, data) {
     .attr("d", line)
     .attr("fill", "none")
     .attr("stroke", function (d) {
-      return colorScale(d);
+      return colorScale(d[0][2]);
     })
-    .attr("class", "line-path")
+    .attr("class", function(d) {
+      return "line-path country_" + d[0][2].replace(/ /g, "_");
+    })
     .attr("stroke-width", "2.5")
     .attr("stroke-linejoin", "round")
     .attr("stroke-linecap", "round");
@@ -155,73 +212,237 @@ function enter(svg, data) {
   let dot = svg.append("g").attr("display", "none");
 
   dot
-    .append("circle")
-    .attr("class", "circles")
-    .attr("r", 2.5)
-    .select(function() { return this.parentNode; }) //Go back 1 level
-    .append("text") // TODO: Ming Soo add further improvements
-    .attr("text-anchor", "middle")
-    .attr("y", -8);
+  .append("circle")
+  .attr("class", "circles")
+  .attr("r", 2.5);
 
-  // Utilize custom mouse behaviours
+// DEFINE CUSTOM MOUSE BEHAVIOURS
+
+// Handles click event on highlighted path
+  let clicked = function() {
+    //Find clicked country
+    let dt = d3.select(".selected").data();
+
+    //Exit function if no country is selected
+    if (dt.length == 0) {
+      return;
+    }
+
+    //Get country name
+    let countryName = dt[0][0][2];
+
+    let selectedData = data.filter (function (d) {
+      return d.origin === countryName;
+    });
+
+    //Total emigration due to brain drain
+    let totalEmigration = d3.sum (selectedData, function (d) {
+      return d.emigration;
+    });
+
+    //Remove clutter
+    dot.attr("display", "none");
+    svg.selectAll(".hover-annotation").remove();
+
+    //Get the detail card
+    let detailcard = d3.select("#detailCard");
+
+    detailcard.classed("d-none", false)
+    .select(".clickedCountryName")
+    .text(countryName);
+
+    //Assign properties
+    detailcard.select(".clickedRegionName")
+        .text("South Eastern Asia");
+
+    detailcard.select(".overallEmigrationBrainDrain")
+      .text(totalEmigration.toLocaleString(locale));
+
+    //Zooming logic starts here
+
+    function customRescaleY(y) {
+      //Find max value
+      let max = d3.max(selectedData, (d) => d.emigration);
+
+      let ceiling = max + (max * 0.1);
+
+      domain = [0, ceiling];
+
+      return y.copy().domain(domain);
+    }
+
+    let yZoomScale = customRescaleY(yS);
+
+    //Redraw y-axis
+    gYAxis.call(yAxis.scale(yZoomScale));
+
+    //Replot points and groups
+    points = data.map((d) => [xS(d.year), yZoomScale(d.emigration), d.origin]);
+    groups = d3.rollup(
+      points,
+      (v) => Object.assign(v, { z: v[0][2] }),
+      (d) => d[2]
+    );
+
+    //Replot lines
+    path.data(groups.values())
+    .join("path")
+
+    //Animation on zoom
+    .transition()
+    .attr("d", line)
+    .ease(d3.easeBack)
+    .duration(500);
+  };
+
   let pointerentered = () => pointerEntered(path, dot);
+
   let pointermoved = (event) =>
-    pointerMoved(event, data, points, path, dot, svg);
+    pointerMoved(event, data, points, path, dot, svg, colorScale);
+
   let pointerleft = () => pointerLeft(path, dot, svg);
+
+
 
   svg
     .on("pointerenter", pointerentered)
     .on("pointermove", pointermoved)
     .on("pointerleave", pointerleft)
+    .on("click", clicked)
     .on("touchstart", (event) => event.preventDefault());
 
-  // Zoom effect
-  let zoomedIn = (event) => zoomed(event, svg, data, yAxis);
-  const zoom = d3.zoom()
-                .scaleExtent([1, 5])
-                .extent([[marginLeft, 0], [w - marginRight, h]])
-                .translateExtent([[marginLeft, -Infinity], [w - marginRight, Infinity]])
-                .on("zoom", zoomedIn);
-  svg.call(zoom);
+  //Close Detail Card
+  d3.select("#detailCard").select(".btn-close")
+  .on("click", function(event, d) {
+      //Hide country card
+      d3.select("#detailCard")
+          .classed("d-none", true);
 
 
-  // console.log(d3.select(".line-path").select("path").node());
+      //Resets zoom
+      let yResetScale = yScale(data);
+
+      //Redraw y-axis
+      gYAxis.call(yAxis.scale(yResetScale));
+  
+      //Replot points and groups
+      points = data.map((d) => [xS(d.year), yResetScale(d.emigration), d.origin]);
+      groups = d3.rollup(
+        points,
+        (v) => Object.assign(v, { z: v[0][2] }),
+        (d) => d[2]
+      );
+  
+      //Replot lines
+      path.data(groups.values())
+      .join("path")
+  
+      //Animation on zoom
+      .transition()
+      .attr("d", line)
+      .ease(d3.easeBack)
+      .duration(500);
+
+  });
+
 }
 
-// DEFINE CUSTOM MOUSE BEHAVIOURS
 // When the pointer moves, find the closest point, update the interactive tip, and highlight corresponding lines.
-async function pointerMoved(event, data, points, path, dot, svg) {
+function pointerMoved(event, data, points, path, dot, svg, colourScale) {
+
+  //Remove previous hover annotations
+  svg.selectAll(".hover-annotation").remove();
+
   const [xm, ym] = d3.pointer(event);
   const i = d3.leastIndex(points, ([x, y]) => Math.hypot(x - xm, y - ym));
   const [x, y, k] = points[i];
 
   path
     .style("stroke", ({ z }) => (z === k ? null : "#ddd"))
+    .classed("selected", ({z}) => (z === k ? true : false))
     .filter(({ z }) => z === k)
     .raise();
+  
+  //Find data
+  let selectedData = data.filter (function (d) {
+    return d.origin === k;
+  });
+
+  let xPoints = points.map((d) => d[0]);
+
+  let dxPoints = Array.from(new Set(xPoints));
+
+  let dataIndex = dxPoints.indexOf(x);
+
+  //Create annotations
+  createHoverAnnotations(x, y, selectedData[dataIndex], colourScale);
+
   dot.attr("transform", `translate(${x},${y})`);
   dot.select("text").text(k);
   // console.log(k);
   svg.property("value", data[i]).dispatch("input", { bubbles: true });
 }
 
-async function pointerEntered(path, dot) {
-  path.style("mix-blend-mode", null).style("stroke", "#ddd");
+function pointerEntered(path, dot) {
+
+  path.style("mix-blend-mode", null)
+  .style("stroke", "#ddd")
+  .classed("selected", false);
+
   dot.attr("display", null);
 }
 
-async function pointerLeft(path, dot, svg) {
-  path.style("mix-blend-mode", "multiply").style("stroke", null);
+function pointerLeft(path, dot, svg) {
+
+  path.style("mix-blend-mode", "multiply")
+  .style("stroke", null)
+  .classed("selected", false);
+
   dot.attr("display", "none");
   svg.node().value = null;
-  svg.dispatch("input", { bubbles: true });
+  svg.dispatch("input", { bubbles: true })
+    //Remove previous hover annotations
+    .selectAll(".hover-annotation").remove();
 }
 
-// DEFINE ZOOM BEHAVIOUR
-async function zoomed(event, svg, data, yAxis) {
-  svg.attr("transform", event.transform);
-  yAxis.scale(event.transform.rescaleY(yScale(data))); //FIXME: do not zoom axes [how can I zoom the line areas only?], zoom is overflowing container
+//When mouse over countrys
+function createHoverAnnotations(x, y, data, colourScale) {
+
+  //Define annotation type
+  const annotype = d3.annotationLabel;
+
+  //Create annotation
+  let annotation = [{
+      note: {
+          title: data.origin + " (" + data.year + ")",
+          label: data.emigration.toLocaleString(locale),
+          bgPadding: 20,
+      },
+      //To show bg, bg accessible in HTML
+      className: "show-bg",
+      //Set X and Y
+      x: x,
+      y: y,
+      dx: 0,
+      dy: 20,
+      color: colourScale(data.origin)
+  }];
+
+  //Set annotations properties
+  let makeAnnotations = d3.annotation()
+      .editMode(false)
+      .notePadding(20)
+      .type(annotype)
+      .annotations(annotation);
+
+  //Draw annotations
+  d3.select("svg")
+      .append("g")
+      .attr("class", "annotation-group hover-annotation")
+      .call(makeAnnotations);
 }
 
 
-window.onload = init;
+window.onload = init; //On initialise
+
+window.onresize = resize; //Executes the resize function when the window is resized
