@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Data Visualisation Project - Emigrations Over Time</title>
+  <title>Data Visualisation 1 - Emigrations Over Time</title>
 
   <!-- Browser Icon -->
   <link rel="shortcut icon" type="image/png" href="../assets/images/logos/research-icon.png" />
@@ -22,7 +22,6 @@
 
   <!-- Custom -->
   <script src="../assets/js/app.min.js"></script>
-  <script src="../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
 
   <!-- Lodash Optimisation -->
   <script src="../assets/libs/lodash/lodash.js"></script>
@@ -32,6 +31,24 @@
 
   <!-- D3 Annotations Plugin -->
   <script src="../assets/d3/script/d3-annotation.min.js"></script>
+
+  <!-- D3 Annotations Style -->
+  <style>
+    .show-bg .annotation-note-bg {
+      fill: white;
+      fill-opacity: 0.90;
+    }
+
+    .annotation-note-title {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .annotation-note-label {
+      font-size: 1em;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -169,9 +186,18 @@
                   <!-- PLACE VISUALISATION TAG HERE - FROM YOUR D3 JS -->
                   <div id="line-chart" style="width: 100%;"></div>
 
-                  <!-- CARDS -->
-                  <div></div>
-                  <div></div>
+                  <!-- Detailed Proportion Card -->
+                  <div id="detailCard" class="card position-absolute top-0 end-0 m-3 d-none">
+                    <div class="card-body p-3">
+                      <h5 class="card-title fw-semibold"><span class="clickedCountryName text-primary">Country</span><button type="button" class="btn-close float-end ms-3" aria-label="Close"></button></h5>
+                      <p class="card-subtitle text-body-secondary fw-semibold mb-2 clickedRegionName">Region Name</p>
+                      <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item" style="padding-left: 0;">
+                          <b>Overall Emigrated (Brain Drain: 1990 to 2020):</b> <span class = "overallEmigrationBrainDrain">Placeholder Number</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
 
                 </div>
               </div>
