@@ -73,8 +73,7 @@ async function init() {
 function StackedBarChart(
   data,
   {
-    x = (d) =>
-      d.emigrant_gender === "Male" ? -d.emigration_count : d.emigration_count, // given d in data, returns the (quantitative) x-value
+    x = (d) => d.emigrant_gender === "Male" ? -d.emigration_count : d.emigration_count, // given d in data, returns the (quantitative) x-value
     y = (d) => d.origin_name, // given d in data, returns the (ordinal) y-value
     z = (d) => d.emigrant_gender, // given d in data, returns the (categorical) z-value
     title, // given d in data, returns the title text
@@ -105,6 +104,8 @@ function StackedBarChart(
     colors = d3.schemePaired, // array of colors
   } = {}
 ) {
+
+
   // Compute values.
   const X = d3.map(data, x);
   const Y = d3.map(data, y);
