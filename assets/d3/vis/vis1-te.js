@@ -140,7 +140,6 @@ function enter(svg, data) {
     (d) => d[2]
   );
 
-  //TODO: Set custom colours for each country
   //Custom colour scheme
   let customScheme = [
     "#e6194B",
