@@ -70,40 +70,37 @@ async function init() {
 // Copyright 2021 Observable, Inc.
 // Released under the ISC license.
 // https://observablehq.com/@d3/diverging-stacked-bar-chart
-function StackedBarChart(
-  data,
-  {
-    x = (d) => d.emigrant_gender === "Male" ? -d.emigration_count : d.emigration_count, // given d in data, returns the (quantitative) x-value
-    y = (d) => d.origin_name, // given d in data, returns the (ordinal) y-value
-    z = (d) => d.emigrant_gender, // given d in data, returns the (categorical) z-value
-    title, // given d in data, returns the title text
-    xType = d3.scaleLinear, // type of x-scale
-    xDomain, // [xmin, xmax]
-    xRange = [marginLeft, w - marginRight], // [left, right]
-    yDomain = d3.groupSort(
-      data,
-      (D) => d3.sum(D, (d) => -Math.min(0, d.emigration_count)),
-      (d) => d.origin_name
-    ), // array of y-values
-    yRange, // [bottom, top]
-    yPadding = 0.1, // amount of y-range to reserve to separate bars
-    zDomain = data.emigrant_gender, // array of z-values
-    offset = d3.stackOffsetDiverging, // stack offset method
-    order = (series) => {
-      // stack order method; try also d3.stackOffsetNone
-      return [
-        // by default, stack negative series in reverse order
-        ...series
-          .map((S, i) => (S.some(([, y]) => y < 0) ? i : null))
-          .reverse(),
-        ...series.map((S, i) => (S.some(([, y]) => y < 0) ? null : i)),
-      ].filter((i) => i !== null);
-    },
-    xFormat, // a format specifier string for the x-axis
-    xLabel = "← MALE · " + data[0].emigration_year + " · FEMALE →", // a label for the x-axis
-    colors = d3.schemePaired, // array of colors
-  } = {}
-) {
+function StackedBarChart(data) {
+
+  let x = (d) => d.emigrant_gender === "Male" ? -d.emigration_count : d.emigration_count; // given d in data, returns the (quantitative) x-value
+  let y = (d) => d.origin_name; // given d in data, returns the (ordinal) y-value
+  let z = (d) => d.emigrant_gender; // given d in data, returns the (categorical) z-value
+  let title; // given d in data, returns the title text
+  let xType = d3.scaleLinear; // type of x-scale
+  let xDomain; // [xmin, xmax]
+  let xRange = [marginLeft, w - marginRight]; // [left, right]
+  let yDomain = d3.groupSort(
+    data,
+    (D) => d3.sum(D, (d) => -Math.min(0, d.emigration_count)),
+    (d) => d.origin_name
+  ); // array of y-values
+  let yRange; // [bottom, top]
+  let yPadding = 0.1; // amount of y-range to reserve to separate bars
+  let zDomain = data.emigrant_gender; // array of z-values
+  let offset = d3.stackOffsetDiverging; // stack offset method
+  let order = (series) => {
+    // stack order method; try also d3.stackOffsetNone
+    return [
+      // by default, stack negative series in reverse order
+      ...series
+        .map((S, i) => (S.some(([, y]) => y < 0) ? i : null))
+        .reverse(),
+      ...series.map((S, i) => (S.some(([, y]) => y < 0) ? null : i)),
+    ].filter((i) => i !== null);
+  };
+  let xFormat; // a format specifier string for the x-axis
+  let xLabel = "← MALE · " + data[0].emigration_year + " · FEMALE →"; // a label for the x-axis
+  let colors = d3.schemePaired; // array of colors
 
 
   // Compute values.
