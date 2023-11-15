@@ -4,10 +4,10 @@
 // Chart dimensions.
 let w = d3.select("#bar-chart").node().getBoundingClientRect().width;
 let h = 758;
-const marginTop = 20;
+const marginTop = 30;
 const marginRight = 20;
 const marginBottom = 30;
-const marginLeft = 40;
+const marginLeft = 50;
 let migrationDS;
 
 async function init() {
@@ -33,17 +33,17 @@ async function init() {
 // Released under the ISC license.
 // https://observablehq.com/@d3/diverging-stacked-bar-chart
 function StackedBarChart(data, {
-  x = (d) => d.emigration_count, // given d in data, returns the (quantitative) x-value
+  x = (d) => d.emigrant_gender === 'Male' ? -d.emigration_count : d.emigration_count, // given d in data, returns the (quantitative) x-value
   y = (d) => d.origin_name, // given d in data, returns the (ordinal) y-value
   z = (d) => d.emigrant_gender, // given d in data, returns the (categorical) z-value
   title, // given d in data, returns the title text
   xType = d3.scaleLinear, // type of x-scale
   xDomain, // [xmin, xmax]
   xRange = [marginLeft, w - marginRight], // [left, right]
-  yDomain, // array of y-values
+  yDomain = d3.groupSort(data, D => d3.sum(D, d => -Math.min(0, d.emigration_count)), d => d.origin_name), // array of y-values
   yRange, // [bottom, top]
   yPadding = 0.1, // amount of y-range to reserve to separate bars
-  zDomain, // array of z-values
+  zDomain = data.emigrant_gender, // array of z-values
   offset = d3.stackOffsetDiverging, // stack offset method
   order = (series) => { // stack order method; try also d3.stackOffsetNone
     return [ // by default, stack negative series in reverse order
@@ -52,7 +52,7 @@ function StackedBarChart(data, {
     ].filter(i => i !== null);
   },
   xFormat, // a format specifier string for the x-axis
-  xLabel, // a label for the x-axis
+  xLabel = "← MALE · GENDER · FEMALE →", // a label for the x-axis
   colors = d3.schemeTableau10, // array of colors
 } = {}) {
   // Compute values.
