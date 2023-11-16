@@ -149,7 +149,10 @@ function StackedBarChart(data) {
   // const xScale = xType(xDomain, xRange); // Produce asymmetric horizontal axis
   const yScale = d3.scaleBand(yDomain, yRange).paddingInner(yPadding);
   const color = d3.scaleOrdinal(zDomain, colors);
-  const xAxis = d3.axisTop(xScale).ticks(w / 80, xFormat);
+  const xAxis = d3.axisTop(xScale)
+                  .ticks(w / 80, xFormat)
+                  .tickFormat(function(d) { return d3.format(',')(Math.abs(d)) });
+
   const yAxis = d3.axisLeft(yScale).tickSize(0);
 
   // Compute titles.
