@@ -231,7 +231,9 @@ function enter(svg, data) {
 // Handles click event on highlighted path
   let clicked = function() {
     //Find clicked country
-    let dt = d3.select(".selected").data();
+    let dt = d3.select("g.line-graph")
+              .select(".selected")
+              .data();
 
     console.log(dt);
 
