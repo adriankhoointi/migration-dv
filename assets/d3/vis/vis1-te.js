@@ -223,7 +223,7 @@ function enter(svg, data) {
   dot
   .append("circle")
   .attr("class", "circles")
-  .attr("r", 2.5);
+  .attr("r", 5);
 
 // DEFINE CUSTOM MOUSE BEHAVIOURS
 
@@ -388,10 +388,8 @@ function pointerMoved(event, data, points, path, dot, svg, colourScale) {
   //Create annotations
   createHoverAnnotations(x, y, selectedData[dataIndex], colourScale);
 
-  dot.attr("transform", `translate(${x},${y})`);
-  dot.select("text").text(k);
-  // console.log(k);
-  svg.property("value", data[i]).dispatch("input", { bubbles: true });
+  dot.attr("transform", `translate(${x},${y})`)
+      .attr("fill", colourScale(k));
 }
 
 function pointerEntered(path, dot) {
