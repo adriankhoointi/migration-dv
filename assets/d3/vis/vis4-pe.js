@@ -64,9 +64,54 @@ async function init() {
   });
 }
 
-// Copyright 2021 Observable, Inc.
-// Released under the ISC license.
-// https://observablehq.com/@d3/diverging-stacked-bar-chart
+//Dynamic resize
+async function resize() {
+  //Remove SVG
+  d3.select("svg").remove();
+
+  //Reset width
+  w = d3.select("#bar-chart").node().getBoundingClientRect().width;
+
+  //Redraw visualisation
+  let data = migrationDS.filter((d) => d.emigration_year == 2020); // Hold the default data
+  StackedBarChart(data); // Draw the chart with the default data
+
+  d3.selectAll(".filter-btn").on("click", function () {
+    let id = d3.select(this).attr("id");
+
+    if (id != "" && id != undefined) {
+      let input = id;
+      // console.log(input);
+
+      switch (input) {
+        case "filter-2000":
+          data = migrationDS.filter((d) => d.emigration_year == 2000);
+          break;
+        case "filter-2005":
+          data = migrationDS.filter((d) => d.emigration_year == 2005);
+          break;
+        case "filter-2010":
+          data = migrationDS.filter((d) => d.emigration_year == 2010);
+          break;
+        case "filter-2015":
+          data = migrationDS.filter((d) => d.emigration_year == 2015);
+          break;
+        case "filter-2020":
+          data = migrationDS.filter((d) => d.emigration_year == 2020);
+          break;
+        default:
+          data = migrationDS.filter((d) => d.emigration_year == 2020);
+      }
+      d3.select("#bar-chart").html(""); // Clear the existing chart
+      // console.table(data,["migration_year","origin_name","emigrant_gender","emigration_count",]);
+      StackedBarChart(data);
+    } else {
+      console.log("No filter selected");
+    }
+  });
+}
+
+
 function StackedBarChart(data) {
 
   let x = (d) => d.emigrant_gender === "Male" ? -d.emigration_count : d.emigration_count; // given d in data, returns the (quantitative) x-value
@@ -238,3 +283,5 @@ function StackedBarChart(data) {
 }
 
 window.onload = init;
+
+window.onresize = resize; //Executes the resize function when the window is resized
