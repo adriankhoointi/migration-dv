@@ -223,6 +223,8 @@ function enter(svg, data) {
     //Find clicked country
     let dt = d3.select(".selected").data();
 
+    console.log(dt);
+
     //Exit function if no country is selected
     if (dt.length == 0) {
       return;
