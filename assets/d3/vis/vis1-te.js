@@ -33,7 +33,6 @@ async function init() {
         let origin = d.origin != "South-Eastern Asia"; // Exclude "South-Eastern Asia"
         return origin;
       });
-      console.table(filteredData, ["year", "origin", "emigration"]); // Print data to console
 
       migrationDS = filteredData;
       lineChart(migrationDS);
