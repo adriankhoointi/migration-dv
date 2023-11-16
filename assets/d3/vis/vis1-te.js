@@ -1,9 +1,3 @@
-//Templates
-// https://observablehq.com/@d3/multi-line-chart
-// https://observablehq.com/@d3/line-with-tooltip
-// https://observablehq.com/@d3/pan-zoom-axes
-
-
 // Chart dimensions.
 let w = d3.select("#line-chart").node().getBoundingClientRect().width;
 let h = 800;
