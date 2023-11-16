@@ -1,7 +1,3 @@
-// Templates
-// https://observablehq.com/@d3/diverging-stacked-bar-chart
-// https://observablehq.com/@douglyuckling/diverging-stacked-bar-chart
-
 // Chart dimensions.
 let w = d3.select("#bar-chart").node().getBoundingClientRect().width;
 let h = 758;
@@ -34,7 +30,6 @@ async function init() {
 
     if (id != "" && id != undefined) {
       let input = id;
-      // console.log(input);
 
       switch (input) {
         case "filter-2000":
@@ -56,7 +51,6 @@ async function init() {
           data = migrationDS.filter((d) => d.emigration_year == 2020);
       }
       d3.select("#bar-chart").html(""); // Clear the existing chart
-      // console.table(data,["migration_year","origin_name","emigrant_gender","emigration_count",]);
       StackedBarChart(data);
     } else {
       console.log("No filter selected");
@@ -81,8 +75,6 @@ async function resize() {
 
     if (id != "" && id != undefined) {
       let input = id;
-      // console.log(input);
-
       switch (input) {
         case "filter-2000":
           data = migrationDS.filter((d) => d.emigration_year == 2000);
@@ -103,7 +95,6 @@ async function resize() {
           data = migrationDS.filter((d) => d.emigration_year == 2020);
       }
       d3.select("#bar-chart").html(""); // Clear the existing chart
-      // console.table(data,["migration_year","origin_name","emigrant_gender","emigration_count",]);
       StackedBarChart(data);
     } else {
       console.log("No filter selected");
