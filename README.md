@@ -49,7 +49,6 @@ Credits to all the developers that has made our project possible  :heart:
 9. [Stacked Bar Chart, Diverging by D3](https://observablehq.com/@d3/diverging-stacked-bar-chart)
 
 
-
 ## Web Hosting
 
 ### Test Branch (Deployed)
