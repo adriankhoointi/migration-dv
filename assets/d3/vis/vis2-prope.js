@@ -2,8 +2,6 @@
 let worldjson;
 let migrationDS;
 
-//TODO: Add clear elements button if free
-
 //SCRIPT PROPERTIES
 //Define width and height of visualisation
 let w = d3.select("#data-vis").node().getBoundingClientRect().width;
@@ -127,9 +125,6 @@ function enter (svg) {
 
     //Initialise colour scale
     reassignColour(0, d3.mean(filtereddata, d => d.overall_prop) , d3.max(filtereddata, d => d.overall_prop));
-
-    //TODO: d3.mean(filtereddata, d => d.overall_prop) 
-    //TODO: d3.max(filtereddata, d => d.overall_prop)
 
     //Define legend
     function drawLegend(c) {

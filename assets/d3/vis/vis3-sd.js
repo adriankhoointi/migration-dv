@@ -2,8 +2,6 @@
 let worldjson;
 let migrationDS;
 
-//TODO: Add clear elements button if free
-
 //SCRIPT PROPERTIES
 //Define width and height of visualisation
 let w = d3.select("#data-vis").node().getBoundingClientRect().width;
