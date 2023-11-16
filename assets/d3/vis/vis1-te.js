@@ -204,7 +204,6 @@ function enter(svg, data) {
     .data(groups.values())
     .join("path")
     .style("mix-blend-mode", "multiply")
-    .attr("d", line)
     .attr("fill", "none")
     .attr("stroke", function (d) {
       return colorScale(d[0][2]);
@@ -214,7 +213,8 @@ function enter(svg, data) {
     })
     .attr("stroke-width", "2.5")
     .attr("stroke-linejoin", "round")
-    .attr("stroke-linecap", "round");
+    .attr("stroke-linecap", "round")
+    .attr("d", line);
 
   // Create dots for the seven years (1990-2020, 5 years interval)
   // Add an invisible layer for the interactive tip.
@@ -285,7 +285,9 @@ function enter(svg, data) {
     let yZoomScale = customRescaleY(yS);
 
     //Redraw y-axis
-    gYAxis.call(yAxis.scale(yZoomScale));
+    gYAxis.transition()
+    .duration(1000)
+    .call(yAxis.scale(yZoomScale));
 
     //Replot points and groups
     points = data.map((d) => [xS(d.year), yZoomScale(d.emigration), d.origin]);
@@ -298,12 +300,11 @@ function enter(svg, data) {
     //Replot lines
     path.data(groups.values())
     .join("path")
-
     //Animation on zoom
     .transition()
     .attr("d", line)
     .ease(d3.easeBack)
-    .duration(500);
+    .duration(1000);
   };
 
   let pointerentered = () => pointerEntered(path, dot);
@@ -329,12 +330,13 @@ function enter(svg, data) {
       d3.select("#detailCard")
           .classed("d-none", true);
 
-
       //Resets zoom
       let yResetScale = yScale(data);
 
       //Redraw y-axis
-      gYAxis.call(yAxis.scale(yResetScale));
+      gYAxis.transition()
+      .duration(1000)
+      .call(yAxis.scale(yResetScale));
   
       //Replot points and groups
       points = data.map((d) => [xS(d.year), yResetScale(d.emigration), d.origin]);
@@ -352,7 +354,7 @@ function enter(svg, data) {
       .transition()
       .attr("d", line)
       .ease(d3.easeBack)
-      .duration(500);
+      .duration(1000);
 
   });
 
