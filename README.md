@@ -40,6 +40,8 @@ Credits to all the developers that has made our project possible  :heart:
 
 5. [Scrollify by Luke Haas](https://projects.lukehaas.me/scrollify/#home)
 
+6. [Custom GEOJson Builder by ashkyd](https://geojson-maps.ash.ms)
+
 ## Web Hosting
 
 ### Test Branch (Deployed)
