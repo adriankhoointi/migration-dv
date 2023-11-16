@@ -369,7 +369,7 @@ function pointerMoved(event, data, points, path, dot, svg, colourScale) {
   const [x, y, k] = points[i];
 
   path
-    .style("stroke", ({ z }) => (z === k ? null : "#ddd"))
+    .style("stroke", ({ z }) => (z === k ? null : "#eeeee2"))
     .classed("selected", ({z}) => (z === k ? true : false))
     .filter(({ z }) => z === k)
     .raise();
