@@ -19,9 +19,6 @@ let clickedSource = "";
 
 let clickedDestination = "";
 
-//Animation timer
-let flightTimer;
-
 //FUNCTION START
 //Initalise visualisation
 async function init() {
@@ -116,6 +113,7 @@ function enter (svg) {
 
         //Remove hover annotations (Prevent confusion)
         svg.selectAll(".hover-annotation").remove();
+        svg.select(".path-annotation").remove();
 
         //Remove Markers
         removeMarkers();
@@ -177,6 +175,7 @@ function enter (svg) {
 
                 //Remove hover annotations (Prevent confusion)
                 svg.selectAll(".hover-annotation").remove();
+                svg.select(".path-annotation").remove();
 
                 //Remove Markers
                 removeMarkers();
@@ -195,7 +194,6 @@ function enter (svg) {
                     //Hide other paths
                     d3.selectAll(".connections").selectAll("path")
                     .filter(function() {
-                        console.log(this.classList);
                         return !this.classList.contains("origin_" + clickedSource);
                     })
                     .remove();
@@ -211,7 +209,6 @@ function enter (svg) {
                     //Hide other paths
                     d3.selectAll(".connections").selectAll("path")
                     .filter(function() {
-                        console.log(this.classList);
                         return !this.classList.contains("destination_" + clickedDestination);
                     })
                     .remove();
@@ -448,6 +445,9 @@ function enter (svg) {
                 d3.selectAll(".connections").selectAll(".destination_" + clickedDestination)
                     .style("stroke-opacity", 0.1);
             }
+            else {
+                window.alert("Please click on 'Source' or 'Destination' countries only.");
+            }
 
         });
 
@@ -595,7 +595,7 @@ function enter (svg) {
                             .attr("fill-opacity", 1)
                             .attr("stroke-opacity", 1)
                             .ease(d3.easePolyInOut.exponent(1))
-                            .duration(20000)
+                            .duration(10000)
                             .attrTween("x", translateAlongX(cstr))
                             .attrTween("y", translateAlongY(cstr));
             

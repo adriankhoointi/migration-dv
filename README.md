@@ -40,6 +40,15 @@ Credits to all the developers that has made our project possible  :heart:
 
 5. [Scrollify by Luke Haas](https://projects.lukehaas.me/scrollify/#home)
 
+6. [Custom GEOJson Builder by ashkyd](https://geojson-maps.ash.ms)
+
+7. [Line Chart, Multiple Series by D3](https://observablehq.com/@d3/multi-line-chart)
+
+8. [Pan & Zoom Axes by D3](https://observablehq.com/@d3/pan-zoom-axes)
+
+9. [Stacked Bar Chart, Diverging by D3](https://observablehq.com/@d3/diverging-stacked-bar-chart)
+
+
 ## Web Hosting
 
 ### Test Branch (Deployed)
