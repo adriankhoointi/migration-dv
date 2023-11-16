@@ -133,7 +133,7 @@ function StackedBarChart(data) {
   };
   let xFormat; // a format specifier string for the x-axis
   let xLabel = "← MALE · " + data[0].emigration_year + " · FEMALE →"; // a label for the x-axis
-  let colors = d3.schemePaired; // array of colors
+  let colors = ["#2626ef", "#e61f6a"]; // array of colors
 
 
   // Compute values.
