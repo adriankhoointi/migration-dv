@@ -34,7 +34,7 @@ async function init() {
 
     if (id != "" && id != undefined) {
       let input = id;
-      console.log(input);
+      // console.log(input);
 
       switch (input) {
         case "filter-2000":

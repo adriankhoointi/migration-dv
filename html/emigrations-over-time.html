@@ -35,8 +35,8 @@
   <!-- D3 Annotations Style -->
   <style>
     .show-bg .annotation-note-bg {
-      fill: white;
-      fill-opacity: 0.90;
+      fill: #696969;
+      fill-opacity: 0.75;
     }
 
     .annotation-note-title {
@@ -45,7 +45,7 @@
     }
 
     .annotation-note-label {
-      font-size: 1em;
+      font-size: 1.2em;
     }
   </style>
 
@@ -118,14 +118,6 @@
                 <span class="hide-menu">Profiling Emigrations</span>
               </a>
             </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" href="../correlation-of-profiles.html" aria-expanded="false">
-                <span>
-                  <i class="ti ti-affiliate"></i>
-                </span>
-                <span class="hide-menu">Correlation of Profiles</span>
-              </a>
-            </li>
           </ul>
         </nav>
         <!-- End Sidebar navigation -->
@@ -170,7 +162,7 @@
                 
                 <!-- Description -->
                 <p>This is a line chart to illustrate the quantity of migrants moving out of South East Asian countries yearly, from 1990 to 2020. The indicator used for the migrant count is countries in the South-Eastern Asia region to countries with the <strong>"High-Income Economies"</strong> status, according to <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups" target="_blank">World Bank</a>'s country classifications.</p>
-                <p>To use the visualisation, <strong>hover</strong> to focus on a particular country, <strong>scroll</strong> to zoom, and <strong>click on the line</strong> to display the migration count of that country.</p>
+                <p>To use the visualisation, <strong>hover over a point</strong> to view its tooltip, <strong>click to zoom</strong> on a line and display its card, and <strong>close the card</strong> to reset to default view.</p>
               </div>
             </div>
           </div>
@@ -220,7 +212,7 @@
                           <!-- Duplicate for Source -->
                           <h7 class="fw-semibold mb-2 fs-2">United Nations - International Migrant Stock</h7>
                           <div class="d-flex align-items-center mb-3">
-                            <a href="#" class="fs-3 mb-0">Link</a>
+                            <a href="https://www.un.org/development/desa/pd/content/international-migrant-stock" target="_blank" class="fs-3 mb-0">Link</a>
                           </div>
                           <!-- End Duplicate-->
 
@@ -255,17 +247,17 @@
                   <div class="card-body p-4">
                     <h5 class="card-title mb-3 fw-semibold">Legend:</h5>
                     <div class="row align-items-center">
-                      <p><i class="ti ti-square-filled pe-2" style="color:#b15928"></i>Brunei Darussalam</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#a6cee3"></i>Cambodia</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#1f78b4"></i>Indonesia</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#b2df8a"></i>Lao People's Democratic Republic</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#33a02c"></i>Malaysia</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#fb9a99"></i>Myanmar</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#e31a1c"></i>Philippines</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#fdbf6f"></i>Singapore</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#ff7f00"></i>Thailand</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#cab2d6"></i>Timor-Leste</p>
-                      <p><i class="ti ti-square-filled pe-2" style="color:#6a3d9a"></i>Viet Nam</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#e6194B"></i>Brunei Darussalam</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#808000"></i>Cambodia</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#ffe119"></i>Indonesia</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#4363d8"></i>Lao People's Democratic Republic</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#ffd8b1"></i>Malaysia</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#911eb4"></i>Myanmar</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#42d4f4"></i>Philippines</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#dcbeff"></i>Singapore</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#bfef45"></i>Thailand</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#fabed4"></i>Timor-Leste</p>
+                      <p><i class="ti ti-square-filled pe-2" style="color:#4fcc8f"></i>Viet Nam</p>
                     </div>
                   </div>
                 </div>
@@ -284,7 +276,7 @@
                   <p>
                     It is expected that the number of people migrating out of <strong>South East Asian countries</strong> to other countries with better economies will increase over time. This is due to the fact that population growth is increasing at a faster rate than economic growth in South East Asian countries.
                     <br>
-                    <br>To validate this assertion, the line chart created above connects the <strong>number of emigrations</strong> for each country in the South-East Asian region within a 30-year period, from 1990 to 2020. 
+                    <br>To validate this assertion, the line chart created above connects the <strong>number of emigrations</strong> for each country in the South-East Asian region in the past 3 decades, from 1990 to 2020. 
                     <br>
                     <br>By connecting the dots between each year, <strong>upward or downward trends</strong> in the number of emigrations for each country can then be identified.
                     <br>
@@ -306,6 +298,46 @@
                   <p>
                     Highlight your most interesting findings here.
                   </p>
+
+                  <div class="row">
+                    <div class="col-6">
+
+                      <!-- COLUMN 1 --> 
+                      <div class="card">
+                        <div class="card-body">
+                          <p class="card-text" style="font-size: 1.2em;">Between</p>
+                          <h5 class="card-title"><span style="font-size: 4em; color: #EF4200;">1995-2000</span><strong>,</strong></h5>
+                          <p class="card-text" style="font-size: 1.2em;"><strong>Malaysia</strong> witnessed its peak emigration, with a recorded count of <strong>307,032 people leaving the country</strong> during that period.</p>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="col-6">
+                      <!-- COLUMN 2 -->
+                      <div class="card">
+                        <div class="card-body">
+                          <p class="card-text" style="font-size: 1.2em;">Only</p>
+                          <h5 class="card-title fw-semibold" style="font-size: 6em; color: #00ADEF;">2</h5>
+                          <p class="card-text" style="font-size: 1.2em;">countries <strong>among the 11</strong> have experienced a <strong>decrease</strong> in emigration count.</p>
+                          <p>Emigration from <strong>Laos</strong> decreased between 2000 and 2005, and it has been on a downward trend since 2015.
+                            <br>
+                            <br>Emigration from <strong>Timor-Leste</strong> significantly declined from 1990 to 2000. However, in 2005, there was a dramatic increase, with the emigration rate tripling since that year.</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <figure>
+                    <blockquote class="blockquote"> 
+                      Emigration, forced or chosen, across national frontiers or from village to metropolis, is the quintessential experience of our time.
+                    </blockquote>
+                    <figcaption class="blockquote-footer">
+                      Quoted from <cite title="Source Title"><a href="https://www.brainyquote.com/quotes/john_berger_398418" target="_blank">John Berger</a></cite>
+                    </figcaption>
+                  </figure>
+
                 </div>
               </div>
             </div>

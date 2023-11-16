@@ -118,7 +118,7 @@ function enter(svg, data) {
                   .call(yAxis)
 
                   //Remove extra line on y-axis
-                  .call(g => g.select(".domain").remove())
+                  .call(g => g.select(".domain"))
                   
                   //Adding y-axis title label
                   .call((g) =>
@@ -140,20 +140,30 @@ function enter(svg, data) {
     (d) => d[2]
   );
 
-  //TODO: Set custom colours for each country
   //Custom colour scheme
   let customScheme = [
-    "#e41a1c", //Brunei
-    "#377eb8", //Cambodia
-    "#4daf4a", //Indonesia
-    "#984ea3", //Laos
-    "#00FF00", //Malaysia
-    "#ffff33", //Myanmar
-    "#a65628", //Philippines
-    "#f781bf", //Singapore
-    "#999999", //Thailand
-    "#a6cee3", //Timor-Leste
-    "#b2df8a" //Vietnam
+    "#e6194B",
+    "#808000",
+    "#ffe119",
+    "#4363d8",
+    "#ffd8b1",
+    "#911eb4",
+    "#42d4f4",
+    "#dcbeff",
+    "#bfef45",
+    "#fabed4",
+    "#4fcc8f",
+    //Brunei
+    //Cambodia
+    //Indonesia
+    //Laos
+    //Malaysia
+    //Myanmar
+    //Philippines
+    //Singapore
+    //Thailand
+    //Timor-Leste
+    //Vietnam
   ];
 
   // Define color scale
@@ -426,7 +436,7 @@ function createHoverAnnotations(x, y, data, colourScale) {
       x: x,
       y: y,
       dx: 0,
-      dy: 20,
+      dy: 15,
       color: colourScale(data.origin)
   }];
 
