@@ -113,6 +113,9 @@ function enter (svg) {
     //Define initial scale of map
     const initialScale = projection.scale();
 
+    //Define initial rotation of map
+    const initialRotate = projection.rotate();
+
     //Define colour scale to use
     let color;
 
@@ -251,53 +254,11 @@ function enter (svg) {
         .attr("stroke-width", 0.3)
         .style("opacity", 0.8)
         
-        //Add mouseover event
-        .on("mouseover", function(event, d) {
-            //Current color
-            let currentColor = d3.select(this).attr("fill");
-
-            //Darker Hue
-            let newColor = d3.color(currentColor).brighter(2.5);
-
-            d3.select(this).attr("fill", newColor);
-
-            //Create on hover annotation
-            createHoverAnnotations(path, d);
-        })
-
-        //Add mouseout event
-        .on("mouseout", function(event, d) {
-
-            //Revert colour
-            d3.select(this).attr("fill", function(d) {
-                //Check if origin exists
-                let allOriginCode = d3.group(filtereddata, (data)=>{return data.origin_code});
-                let matchOrigin = allOriginCode.has(d.properties.iso_n3) ? true : false;
     
-                //If origin exists
-                if (matchOrigin) {
-                    //Find value if origin code matches
-                    let c = color(d3.max(filtereddata, function(data) {
-                        if(d.properties.iso_n3 == data.origin_code) {
-                            return data.overall_prop;
-                        }
-                    }));
-    
-                    return c;
-                }
-    
-                //If doesn't exists
-                else {
-                    return "white";
-                }
-            })
-
-            //Remove hover annotations
-            svg.selectAll(".hover-annotation").remove();
-        })
-        
         //Add onclick event
         .on("click", function(event, d) {
+
+            //TODO: Add rotate and zoom to country transition
 
             //Check if origin exists
             let allOriginCode = d3.group(filtereddata, (data)=>{return data.origin_code});
@@ -307,6 +268,43 @@ function enter (svg) {
             if (matchOrigin) {
                 //Reset filter if required
                 unfilter();
+
+                let lat = d3.max(filtereddata, function(data) {
+                    if(d.properties.iso_n3 == data.origin_code) {
+                        return -data.origin_lat;
+                    }
+                });
+
+                let long = d3.max(filtereddata, function(data) {
+                    if(d.properties.iso_n3 == data.origin_code) {
+                        return -data.origin_long;
+                    }
+                });
+
+                //UPDATE ZOOM SCALE
+                if (d.properties.iso_n3 == "702") { //Singapore
+                    projection.scale(initialScale * 5);
+                }
+                else if (d.properties.iso_n3 == "096") { //Brunei
+                    projection.scale(initialScale * 3);
+                }
+                else {
+                    projection.scale(initialScale * 1.5);
+                }
+
+                //Update rotation
+                projection.rotate([long, lat]);
+
+                //Update globe radius
+                globe.attr("r", projection.scale());
+
+                //Update path
+                path = d3.geoPath().projection(projection);
+
+                svg.selectAll(".countries").selectAll("path")
+                .transition()
+                .duration(1500)
+                .attr("d", path);
 
                 ////////////////////////////
                 //CARD LOGIC////////////////
@@ -366,6 +364,51 @@ function enter (svg) {
                 window.alert("Please click on shaded countries only.");
             };
 
+        })
+        
+        //Add mouseover event
+        .on("mouseover", function(event, d) {
+            //Current color
+            let currentColor = d3.select(this).attr("fill");
+
+            //Darker Hue
+            let newColor = d3.color(currentColor).brighter(2.5);
+
+            d3.select(this).attr("fill", newColor);
+
+            //Create on hover annotation
+            createHoverAnnotations(path, d);
+        })
+
+        //Add mouseout event
+        .on("mouseout", function(event, d) {
+
+            //Revert colour
+            d3.select(this).attr("fill", function(d) {
+                //Check if origin exists
+                let allOriginCode = d3.group(filtereddata, (data)=>{return data.origin_code});
+                let matchOrigin = allOriginCode.has(d.properties.iso_n3) ? true : false;
+    
+                //If origin exists
+                if (matchOrigin) {
+                    //Find value if origin code matches
+                    let c = color(d3.max(filtereddata, function(data) {
+                        if(d.properties.iso_n3 == data.origin_code) {
+                            return data.overall_prop;
+                        }
+                    }));
+    
+                    return c;
+                }
+    
+                //If doesn't exists
+                else {
+                    return "white";
+                }
+            })
+
+            //Remove hover annotations
+            svg.selectAll(".hover-annotation").remove();
         });
 
     //Close Detail Card
@@ -374,6 +417,23 @@ function enter (svg) {
             //Hide country card
             d3.select("#detailCard")
                 .classed("d-none", true);
+
+            //Reset zoom
+            projection.scale(initialScale);
+
+            //Reset rotation
+            projection.rotate(initialRotate);
+
+            //Update globe radius
+            globe.attr("r", projection.scale());
+
+            //Update path
+            path = d3.geoPath().projection(projection);
+
+            svg.selectAll(".countries").selectAll("path")
+            .transition()
+            .duration(1500)
+            .attr("d", path);
 
             //Reset
             unfilter();
