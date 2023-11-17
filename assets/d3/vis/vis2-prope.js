@@ -296,7 +296,9 @@ function enter (svg) {
                 projection.rotate([long, lat]);
 
                 //Update globe radius
-                globe.attr("r", projection.scale());
+                globe.transition()
+                .duration(1500)
+                .attr("r", projection.scale());
 
                 //Update path
                 path = d3.geoPath().projection(projection);
@@ -425,7 +427,9 @@ function enter (svg) {
             projection.rotate(initialRotate);
 
             //Update globe radius
-            globe.attr("r", projection.scale());
+            globe.transition()
+            .duration(1500)
+            .attr("r", projection.scale());
 
             //Update path
             path = d3.geoPath().projection(projection);
